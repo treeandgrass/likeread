@@ -2,6 +2,7 @@
 
 var acorn = require('acorn');
 var walk = require('acorn/dist/walk');
+var isExpression = require('is-expression');
 
 var lastSRC = '(null)';
 var lastRes = true;
@@ -87,14 +88,4 @@ function toConstant(src, constants) {
   return Function(Object.keys(constants || {}).join(','), 'return (' + src + ')').apply(null, Object.keys(constants || {}).map(function (key) {
     return constants[key];
   }));
-}
-
-function isExpression(src) {
-  try {
-    eval('throw "STOP"; (function () { return (' + src + '); })()');
-    return false;
-  }
-  catch (err) {
-    return err === 'STOP';
-  }
 }

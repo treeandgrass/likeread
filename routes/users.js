@@ -17,17 +17,14 @@ connection.on('error',(err)=>{
 router.get('/', function(req, res, next) {
 
 	var user_model = new UserModel({username:'xiao',email:'email@.com'});
-	user_model.save((err,res)=>{
-		if(err)
-			console.log(err);
-		
+	user_model.save((err,re)=>{
+		console.log(err,re);
 	});
-
-	connection.disconnect((err,res)=>{
-		if(err)
-			console.log(err);
+	connection.close((err,re)=>{
+		console.log(err,re);
 	});
-  	res.render('user.pug');
+	
+	res.render('user');
 });
 
 

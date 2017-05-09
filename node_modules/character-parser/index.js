@@ -1,4 +1,29 @@
+'use strict';
+
+var objIsRegex = require('is-regex');
+
 exports = (module.exports = parse);
+
+var TOKEN_TYPES = exports.TOKEN_TYPES = {
+  LINE_COMMENT: '//',
+  BLOCK_COMMENT: '/**/',
+  SINGLE_QUOTE: '\'',
+  DOUBLE_QUOTE: '"',
+  TEMPLATE_QUOTE: '`',
+  REGEXP: '//g'
+}
+
+var BRACKETS = exports.BRACKETS = {
+  '(': ')',
+  '{': '}',
+  '[': ']'
+};
+var BRACKETS_REVERSED = {
+  ')': '(',
+  '}': '{',
+  ']': '['
+};
+
 exports.parse = parse;
 function parse(src, state, options) {
   options = options || {};
@@ -7,162 +32,202 @@ function parse(src, state, options) {
   var end = options.end || src.length;
   var index = start;
   while (index < end) {
-    if (state.roundDepth < 0 || state.curlyDepth < 0 || state.squareDepth < 0) {
-      throw new SyntaxError('Mismatched Bracket: ' + src[index - 1]);
+    try {
+      parseChar(src[index], state);
+    } catch (ex) {
+      ex.index = index;
+      throw ex;
     }
-    exports.parseChar(src[index++], state);
+    index++;
   }
   return state;
-}
-
-exports.parseMax = parseMax;
-function parseMax(src, options) {
-  options = options || {};
-  var start = options.start || 0;
-  var index = start;
-  var state = exports.defaultState();
-  while (state.roundDepth >= 0 && state.curlyDepth >= 0 && state.squareDepth >= 0) {
-    if (index >= src.length) {
-      throw new Error('The end of the string was reached with no closing bracket found.');
-    }
-    exports.parseChar(src[index++], state);
-  }
-  var end = index - 1;
-  return {
-    start: start,
-    end: end,
-    src: src.substring(start, end)
-  };
 }
 
 exports.parseUntil = parseUntil;
 function parseUntil(src, delimiter, options) {
   options = options || {};
-  var includeLineComment = options.includeLineComment || false;
   var start = options.start || 0;
   var index = start;
   var state = exports.defaultState();
-  while (state.isString() || state.regexp || state.blockComment ||
-         (!includeLineComment && state.lineComment) || !startsWith(src, delimiter, index)) {
-    exports.parseChar(src[index++], state);
+  while (index < src.length) {
+    if ((options.ignoreNesting || !state.isNesting(options)) && matches(src, delimiter, index)) {
+      var end = index;
+      return {
+        start: start,
+        end: end,
+        src: src.substring(start, end)
+      };
+    }
+    try {
+      parseChar(src[index], state);
+    } catch (ex) {
+      ex.index = index;
+      throw ex;
+    }
+    index++;
   }
-  var end = index;
-  return {
-    start: start,
-    end: end,
-    src: src.substring(start, end)
-  };
+  var err = new Error('The end of the string was reached with no closing bracket found.');
+  err.code = 'CHARACTER_PARSER:END_OF_STRING_REACHED';
+  err.index = index;
+  throw err;
 }
-
 
 exports.parseChar = parseChar;
 function parseChar(character, state) {
-  if (character.length !== 1) throw new Error('Character must be a string of length 1');
+  if (character.length !== 1) {
+    var err = new Error('Character must be a string of length 1');
+    err.name = 'InvalidArgumentError';
+    err.code = 'CHARACTER_PARSER:CHAR_LENGTH_NOT_ONE';
+    throw err;
+  }
   state = state || exports.defaultState();
-  state.src = state.src || '';
   state.src += character;
-  var wasComment = state.blockComment || state.lineComment;
+  var wasComment = state.isComment();
   var lastChar = state.history ? state.history[0] : '';
+
 
   if (state.regexpStart) {
     if (character === '/' || character == '*') {
-      state.regexp = false;
+      state.stack.pop();
     }
     state.regexpStart = false;
   }
-  if (state.lineComment) {
-    if (character === '\n') {
-      state.lineComment = false;
-    }
-  } else if (state.blockComment) {
-    if (state.lastChar === '*' && character === '/') {
-      state.blockComment = false;
-    }
-  } else if (state.singleQuote) {
-    if (character === '\'' && !state.escaped) {
-      state.singleQuote = false;
-    } else if (character === '\\' && !state.escaped) {
-      state.escaped = true;
-    } else {
-      state.escaped = false;
-    }
-  } else if (state.doubleQuote) {
-    if (character === '"' && !state.escaped) {
-      state.doubleQuote = false;
-    } else if (character === '\\' && !state.escaped) {
-      state.escaped = true;
-    } else {
-      state.escaped = false;
-    }
-  } else if (state.regexp) {
-    if (character === '/' && !state.escaped) {
-      state.regexp = false;
-    } else if (character === '\\' && !state.escaped) {
-      state.escaped = true;
-    } else {
-      state.escaped = false;
-    }
-  } else if (lastChar === '/' && character === '/') {
-    state.history = state.history.substr(1);
-    state.lineComment = true;
-  } else if (lastChar === '/' && character === '*') {
-    state.history = state.history.substr(1);
-    state.blockComment = true;
-  } else if (character === '/' && isRegexp(state.history)) {
-    state.regexp = true;
-    state.regexpStart = true;
-  } else if (character === '\'') {
-    state.singleQuote = true;
-  } else if (character === '"') {
-    state.doubleQuote = true;
-  } else if (character === '(') {
-    state.roundDepth++;
-  } else if (character === ')') {
-    state.roundDepth--;
-  } else if (character === '{') {
-    state.curlyDepth++;
-  } else if (character === '}') {
-    state.curlyDepth--;
-  } else if (character === '[') {
-    state.squareDepth++;
-  } else if (character === ']') {
-    state.squareDepth--;
+  switch (state.current()) {
+    case TOKEN_TYPES.LINE_COMMENT:
+      if (character === '\n') {
+        state.stack.pop();
+      }
+      break;
+    case TOKEN_TYPES.BLOCK_COMMENT:
+      if (state.lastChar === '*' && character === '/') {
+        state.stack.pop();
+      }
+      break;
+    case TOKEN_TYPES.SINGLE_QUOTE:
+      if (character === '\'' && !state.escaped) {
+        state.stack.pop();
+      } else if (character === '\\' && !state.escaped) {
+        state.escaped = true;
+      } else {
+        state.escaped = false;
+      }
+      break;
+    case TOKEN_TYPES.DOUBLE_QUOTE:
+      if (character === '"' && !state.escaped) {
+        state.stack.pop();
+      } else if (character === '\\' && !state.escaped) {
+        state.escaped = true;
+      } else {
+        state.escaped = false;
+      }
+      break;
+    case TOKEN_TYPES.TEMPLATE_QUOTE:
+      if (character === '`' && !state.escaped) {
+        state.stack.pop();
+        state.hasDollar = false;
+      } else if (character === '\\' && !state.escaped) {
+        state.escaped = true;
+        state.hasDollar = false;
+      } else if (character === '$' && !state.escaped) {
+        state.hasDollar = true;
+      } else if (character === '{' && state.hasDollar) {
+        state.stack.push(BRACKETS[character]);
+      } else {
+        state.escaped = false;
+        state.hasDollar = false;
+      }
+      break;
+    case TOKEN_TYPES.REGEXP:
+      if (character === '/' && !state.escaped) {
+        state.stack.pop();
+      } else if (character === '\\' && !state.escaped) {
+        state.escaped = true;
+      } else {
+        state.escaped = false;
+      }
+      break;
+    default:
+      if (character in BRACKETS) {
+        state.stack.push(BRACKETS[character]);
+      } else if (character in BRACKETS_REVERSED) {
+        if (state.current() !== character) {
+          var err = new SyntaxError('Mismatched Bracket: ' + character);
+          err.code = 'CHARACTER_PARSER:MISMATCHED_BRACKET';
+          throw err;
+        };
+        state.stack.pop();
+      } else if (lastChar === '/' && character === '/') {
+        // Don't include comments in history
+        state.history = state.history.substr(1);
+        state.stack.push(TOKEN_TYPES.LINE_COMMENT);
+      } else if (lastChar === '/' && character === '*') {
+        // Don't include comment in history
+        state.history = state.history.substr(1);
+        state.stack.push(TOKEN_TYPES.BLOCK_COMMENT);
+      } else if (character === '/' && isRegexp(state.history)) {
+        state.stack.push(TOKEN_TYPES.REGEXP);
+        // N.B. if the next character turns out to be a `*` or a `/`
+        //      then this isn't actually a regexp
+        state.regexpStart = true;
+      } else if (character === '\'') {
+        state.stack.push(TOKEN_TYPES.SINGLE_QUOTE);
+      } else if (character === '"') {
+        state.stack.push(TOKEN_TYPES.DOUBLE_QUOTE);
+      } else if (character === '`') {
+        state.stack.push(TOKEN_TYPES.TEMPLATE_QUOTE);
+      }
+      break;
   }
-  if (!state.blockComment && !state.lineComment && !wasComment) state.history = character + state.history;
+  if (!state.isComment() && !wasComment) {
+    state.history = character + state.history;
+  }
   state.lastChar = character; // store last character for ending block comments
   return state;
 }
 
 exports.defaultState = function () { return new State() };
 function State() {
-  this.lineComment = false;
-  this.blockComment = false;
+  this.stack = [];
 
-  this.singleQuote = false;
-  this.doubleQuote = false;
-  this.regexp = false;
-
+  this.regexpStart = false;
   this.escaped = false;
+  this.hasDollar = false;
 
-  this.roundDepth = 0;
-  this.curlyDepth = 0;
-  this.squareDepth = 0;
-
+  this.src = '';
   this.history = ''
   this.lastChar = ''
 }
+State.prototype.current = function () {
+  return this.stack[this.stack.length - 1];
+};
 State.prototype.isString = function () {
-  return this.singleQuote || this.doubleQuote;
+  return (
+    this.current() === TOKEN_TYPES.SINGLE_QUOTE ||
+    this.current() === TOKEN_TYPES.DOUBLE_QUOTE ||
+    this.current() === TOKEN_TYPES.TEMPLATE_QUOTE
+  );
 }
 State.prototype.isComment = function () {
-  return this.lineComment || this.blockComment;
+  return this.current() === TOKEN_TYPES.LINE_COMMENT || this.current() === TOKEN_TYPES.BLOCK_COMMENT;
 }
-State.prototype.isNesting = function () {
-  return this.isString() || this.isComment() || this.regexp || this.roundDepth > 0 || this.curlyDepth > 0 || this.squareDepth > 0
+State.prototype.isNesting = function (opts) {
+  if (
+    opts && opts.ignoreLineComment &&
+    this.stack.length === 1 && this.stack[0] === TOKEN_TYPES.LINE_COMMENT
+  ) {
+    // if we are only inside a line comment, and line comments are ignored
+    // don't count it as nesting
+    return false;
+  }
+  return !!this.stack.length;
 }
 
-function startsWith(str, start, i) {
-  return str.substr(i || 0, start.length) === start;
+function matches(str, matcher, i) {
+  if (objIsRegex(matcher)) {
+    return matcher.test(str.substr(i || 0));
+  } else {
+    return str.substr(i || 0, matcher.length) === matcher;
+  }
 }
 
 exports.isPunctuator = isPunctuator
@@ -200,6 +265,7 @@ function isPunctuator(c) {
       return false;
   }
 }
+
 exports.isKeyword = isKeyword
 function isKeyword(id) {
   return (id === 'if') || (id === 'in') || (id === 'do') || (id === 'var') || (id === 'for') || (id === 'new') ||
@@ -209,8 +275,7 @@ function isKeyword(id) {
          (id === 'return') || (id === 'typeof') || (id === 'delete') || (id === 'switch') || (id === 'export') ||
          (id === 'import') || (id === 'default') || (id === 'finally') || (id === 'extends') || (id === 'function') ||
          (id === 'continue') || (id === 'debugger') || (id === 'package') || (id === 'private') || (id === 'interface') ||
-         (id === 'instanceof') || (id === 'implements') || (id === 'protected') || (id === 'public') || (id === 'static') ||
-         (id === 'yield') || (id === 'let');
+         (id === 'instanceof') || (id === 'implements') || (id === 'protected') || (id === 'public') || (id === 'static');
 }
 
 function isRegexp(history) {

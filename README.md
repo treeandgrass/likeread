@@ -5,7 +5,7 @@
 * MongoDB 
 * ES6
 ## 下载运行
-* git clone
+* git clone https://github.com/treeandgrass/likeread.git
 
 *  likeread
 

@@ -5,14 +5,23 @@
 {
 
 Id:ObjectId
+
 Username:String
+
 Passwd:String
+
 Email:Array
+
 Tel:Array
+
 registerDate:Date
+
 Level:Number
+
 Attention:Array
+
 Followed:Array
+
 Like:Array
 
 
@@ -23,12 +32,19 @@ Like:Array
 {
 
 Id:ObjectId
+
 User_Id:ObjectId
+
 Title:String
+
 Content:String
+
 Date_of_pub:Date
+
 State:Number
+
 Be_like:Array
+
 
 }
 
@@ -37,8 +53,11 @@ Be_like:Array
 {
 
 Column_Id:ObjectId
+
 Column_Name:String
+
 Article_Id:ObjectId
+
 
 }
 
@@ -47,10 +66,15 @@ Article_Id:ObjectId
 {
 
 Id:ObjectId
+
 Article_Id:ObjectId
+
 User_Id:ObjectId
+
 Comment:String
+
 Date_of_comm:Date
+
 
 }
 
@@ -59,8 +83,11 @@ Date_of_comm:Date
 {
 
 Info_Id:ObjectId
+
 User_Id:ObjectId
+
 Info:String
+
 Info_date:Date
 
 }
@@ -70,8 +97,11 @@ Info_date:Date
 {
 
 Ques_Id:ObjectId
+
 User_Id:ObjectId
+
 Ques_cont:String
+
 Ques_date:Date
 
 }
@@ -82,9 +112,13 @@ Ques_date:Date
 {
 
 Ans_Id:ObjectId
+
 User_Id:ObjectId
+
 Ques_Id:ObjectId
+
 Ans_cont:String
+
 Ans_date:Date
 
 }

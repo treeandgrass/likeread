@@ -11,7 +11,7 @@
 
 * node node ./bin/www      
 
-* 浏览器请求 localhost://localhost:3000/
+* 浏览器请求 http://localhost:3000/
 
 
 ## MongoDB数据库设计

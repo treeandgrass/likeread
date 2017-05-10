@@ -17,6 +17,7 @@
 完善中....
 
 ## MongoDB数据库设计
-https://github.com/treeandgrass/likeread/blob/master/MongoDB_Design/likread_model_design.md
+[数据库设计地址](https://github.com/treeandgrass/likeread/blob/master/MongoDB_Design/likread_model_design.md)
+
 更新中！
 

@@ -11,13 +11,13 @@
 
 * node node ./bin/www      
 
-* 浏览器请求 ://localhost:3000/
+* 浏览器请求 localhost://localhost:3000/
 
 ## 状态
 完善中....
 
 ## MongoDB数据库设计
-[数据库设计地址](https://github.com/treeandgrass/likeread/blob/master/MongoDB_Design/likread_model_design.md)
+[MongoDB模型设计](https://github.com/treeandgrass/likeread/blob/master/MongoDB_Design/likread_model_design.md)
 
 更新中！
 

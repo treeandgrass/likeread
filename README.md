@@ -13,11 +13,15 @@
 
 * 浏览器请求 localhost://localhost:3000/
 
-## 状态
-完善中....
 
 ## MongoDB数据库设计
 [MongoDB模型设计](https://github.com/treeandgrass/likeread/blob/master/MongoDB_Design/likread_model_design.md)
 
 更新中！
 
+## 需求与建模
+
+[需求与建模]()
+
+## 状态
+完善中....

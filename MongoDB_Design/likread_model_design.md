@@ -1,6 +1,9 @@
 ## MongoDB模型设计
 
-User:{
+#### collection User
+
+{
+
 Id:ObjectId
 Username:String
 Passwd:String
@@ -11,9 +14,14 @@ Level:Number
 Attention:Array
 Followed:Array
 Like:Array
+
+
 }
 
-Article:{
+#### collection Article
+
+{
+
 Id:ObjectId
 User_Id:ObjectId
 Title:String
@@ -21,38 +29,62 @@ Content:String
 Date_of_pub:Date
 State:Number
 Be_like:Array
+
 }
 
-Column:{
+#### collection Column
+
+{
+
 Column_Id:ObjectId
 Column_Name:String
 Article_Id:ObjectId
+
 }
 
-Comment:{
+#### collection Comment
+
+{
+
 Id:ObjectId
 Article_Id:ObjectId
 User_Id:ObjectId
 Comment:String
 Date_of_comm:Date
+
 }
 
-Info:{
+#### collection Info
+
+{
+
 Info_Id:ObjectId
 User_Id:ObjectId
 Info:String
 Info_date:Date
+
 }
-Question:{
+
+#### collectionQuestion
+
+{
+
 Ques_Id:ObjectId
 User_Id:ObjectId
 Ques_cont:String
 Ques_date:Date
+
 }
-Answer:{
+
+
+#### collection Answer
+
+{
+
 Ans_Id:ObjectId
 User_Id:ObjectId
 Ques_Id:ObjectId
 Ans_cont:String
 Ans_date:Date
+
 }

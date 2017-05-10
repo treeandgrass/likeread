@@ -18,10 +18,10 @@ fs.readdirSync(models)
   .forEach(file => require(join(models, file)));
 
 
-
+// router
 const users = require('./routes/users.js');
 const index = require('./routes/index.js');
-
+const login = require('./routes/login.js');
 
 var app = express();
 
@@ -41,6 +41,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
 app.use('/users', users);
+app.use('/login',login);
+
+
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

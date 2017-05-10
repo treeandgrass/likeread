@@ -6,8 +6,10 @@ mongoose.Promise=global.Promise;
 
 const Schema=mongoose.Schema;
 
-const  userSchema=new Schema({
-	user_id:mongoose.Schema.Types.ObjectId,
+const ObjectId = mongoose.Schema.Types.ObjectId;
+
+const  UserSchema=new Schema({
+	user_id:ObjectId,
 	username:String,
 	email:Array,
 	tel:Array,
@@ -19,7 +21,7 @@ const  userSchema=new Schema({
 
 },{collection:'data'});
 
-mongoose.model('UserModel',userSchema);
+mongoose.model('User_Model',UserSchema);
 
 
 

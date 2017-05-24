@@ -8,6 +8,12 @@ var bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const join = require('path').join;
 const fs = require('fs');
+const ejs = require('ejs');
+
+//实现模块热加载
+const webpack=require('webpack');
+const webpackConfig = require('./public/javascripts/webpack.config');
+const compiler = webpack(webpackConfig);
 
 
 // Bootstrap mongoose models
@@ -19,7 +25,7 @@ fs.readdirSync(models)
 
 
 // router
-const users = require('./routes/users.js');
+// const users = require('./routes/users.js');
 const index = require('./routes/index.js');
 const login = require('./routes/login.js');
 
@@ -27,9 +33,22 @@ var app = express();
 
 
 
+
+//使用webpacl-dev-middleware
+app.use(require("webpack-dev-middleware")(compiler,{
+  noInfo:true,publicPath:webpackConfig.output.publicPath
+}));
+
+
+//使用webpack-hot-middleware
+app.use(require("webpack-hot-middleware")(compiler));
+
+
+
 // view engine setup
+app.engine('html',ejs.__express);
 app.set('views', './views');
-app.set('view engine','pug');
+app.set('view engine','html');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
@@ -39,9 +58,19 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', index);
-app.use('/users', users);
+
+
+//路由
+
+app.use('/index', index);
 app.use('/login',login);
+
+
+
+
+
+
+
 
 
 

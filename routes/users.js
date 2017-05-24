@@ -24,7 +24,7 @@ router.get('/', function(req, res, next) {
 		console.log(err,re);
 	});
 	
-	res.render('user');
+	res.render('user.html');
 });
 
 

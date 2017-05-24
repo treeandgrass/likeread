@@ -1,0 +1,55 @@
+@charset 'utf-8';
+
+
+#login{
+	margin:0 auto;
+	height:350px;
+	width:300px;
+	position:relative;
+	border:2px solid;
+	top:180px;
+	font-size:20px;
+	background-color:white;
+}
+
+form{
+	margin-top:10px;
+}
+
+#container{
+	width:300px;
+	height:350px;
+}
+
+#login_font{
+	width:270px;
+}
+
+p{
+	with:300px;
+}
+
+input{
+	width:270px;
+	height:30px;
+	margin-top:30px;
+	margin-left:15px;
+}
+
+#submit_input{
+	width:275px;
+	margin-top:55px;
+}
+
+/*
+注册标签样式
+*/
+#register{
+	position:relative;
+	left:100px;
+	width:50px;
+}
+a{
+	text-decoration:none;
+	color:black;
+}

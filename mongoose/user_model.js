@@ -11,6 +11,7 @@ const ObjectId = mongoose.Schema.Types.ObjectId;
 const  UserSchema=new Schema({
 	user_id:ObjectId,
 	username:String,
+	password:String,
 	email:Array,
 	tel:Array,
 	registerDate:Date,

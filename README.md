@@ -2,13 +2,13 @@
 构建一个阅读网站，模仿简书，并进行改进，网站取名 *likeread*
 
 ## 技术
-* node.js(v6.10.3)
+* Node.js(v6.10.3)
 * MongoDB 
 * ES6
-* mongoose
-* react.js
+* Mongoose
+* React.js
 * WebPack
-* babel
+* Babel
 * node-inspector
 * Supervisor
 

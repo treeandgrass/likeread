@@ -1,30 +1,36 @@
 ## 主题
-一个阅读网站，名字likeread
+构建一个阅读网站，模仿简书，并进行改进，网站取名 *likeread*
+
 ## 技术
 * node.js(v6.10.3)
 * MongoDB 
 * ES6
+* mongoose
+* react.js
+* WebPack
+* babel
+* node-inspector
+* Supervisor
+
 ## 下载运行
 * git clone https://github.com/treeandgrass/likeread.git
 
-*  likeread
+* cd likeread
 
-* node node ./bin/www      
+* supervisor --debug ./bin/www   (默认已全局安装 Supervisor)
 
-* 浏览器请求 http://localhost:3000/
+* node-inspector    (默认已安装node-inspector，新启一个命令行窗口运行)
+
+* 浏览器请求 http://localhost:3000/index
 
 
 ## MongoDB数据库设计
 [MongoDB模型设计](https://github.com/treeandgrass/likeread/blob/master/MongoDB_Design/likread_model_design.md)
-
-更新中！
-
+[MongoDB monoose代码](https://github.com/treeandgrass/likeread/tree/master/mongoose)
 ## 需求与建模
 
 [需求与建模](https://github.com/treeandgrass/likeread/tree/master/UML%E5%BB%BA%E6%A8%A1)
 
-更新中！
+## 进度
 
-
-## 状态
-完善中....
+（2017-5-24）完成[登录](https://github.com/treeandgrass/likeread/blob/master/routes/login.js)功能

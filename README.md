@@ -34,5 +34,5 @@
 
 ## 进度
 
-（2017-5-24）完成[登录](https://github.com/treeandgrass/likeread/blob/master/routes/login.js)功能
-（2017-5-29）完成[注册](https://github.com/treeandgrass/likeread/blob/master/routes/register.js)
+* （2017-5-24）完成[登录](https://github.com/treeandgrass/likeread/blob/master/routes/login.js)功能
+* （2017-5-29）完成[注册](https://github.com/treeandgrass/likeread/blob/master/routes/register.js)

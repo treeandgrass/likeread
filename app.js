@@ -28,8 +28,8 @@ fs.readdirSync(models)
 // const users = require('./routes/users.js');
 const index = require('./routes/index.js');
 const login = require('./routes/login.js');
-const register = require('./routes/register.js');
 
+const register = require('./routes/register.js');
 
 
 var app = express();
@@ -39,7 +39,8 @@ var app = express();
 
 //使用webpacl-dev-middleware
 app.use(require("webpack-dev-middleware")(compiler,{
-  publicPath:webpackConfig.output.publicPath
+  noInfo:true,publicPath:webpackConfig.output.publicPath
+
 }));
 
 
@@ -68,6 +69,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/index', index);
 app.use('/login',login);
 app.use('/register',register);
+
 
 
 

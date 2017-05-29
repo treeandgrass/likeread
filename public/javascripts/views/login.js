@@ -8,7 +8,8 @@ class Login_Form extends React.Component{
 		this.state={login:{
 				url:'login',
 				method:'post',
-				register_url:'/register'
+				register_url:'/register',
+				method:'post'
 			}};
 	}
 
@@ -26,6 +27,7 @@ class Login_Form extends React.Component{
 
 	render(){
 		return (
+
 					<form action={this.state.login.url} method={this.state.login.method}>
 						<p id="login_font">密码登录</p>
 						<label><input name="username" placeholder="账号/邮箱/手机" type="text" required /></label>

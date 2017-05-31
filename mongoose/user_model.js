@@ -18,8 +18,9 @@ const  UserSchema=new Schema({
 	level:Number,
 	attention:Array,
 	followed:Array,
-	like:Array
-
+	like:Array,
+	hash:String,
+	active:Number
 },{collection:'data'});
 
 mongoose.model('User_Model',UserSchema);

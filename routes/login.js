@@ -27,7 +27,6 @@ if(req.body.username&&req.body.password){
 			let queryResult=User_Model.find({username:req.body.username,password:req.body.password});
 			queryResult.exec((err,result)=>{
 // 				str_res=JSON.stringify(result);
-				debugger;
 				//str_res=="[]"
 				console.log(result.username);
 				console.log(result.password);

@@ -47,6 +47,7 @@ xhr.onreadystatechange=function(){
 	if(xhr.readyState===XMLHttpRequest.DONE){
 		if(xhr.status===200){
 			//重定向到首页
+			document.cookie='jsessionid='+xhr.responseText;
 			window.location.href="index";
 		}else if(xhr.status===302){
 			
@@ -66,12 +67,15 @@ xhr.onreadystatechange=function(){
 			p_element.setAttribute("id","show_prompt");
 			post_form.append(p_element);
 			var timeoutID=setTimeout(function(){
-				post_from.removeChild(p_element);
+				post_form.removeChild(p_element);
 				clearTimeout(timeoutID);
 			},2000);
 		}
 	}
 }
+
+
+
 
 
 

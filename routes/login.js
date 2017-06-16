@@ -32,13 +32,16 @@ if(req.body.username&&req.body.password){
 				{username:req.body.username,password:req.body.password});
 
 			queryResult.exec((err,result)=>{
-				const hash=result.hash;
+				const hash=result?result.hash:null;
 				if(hash){
 					//构造token
 					const jsessionid=hashcrypto(new String(hash+''+Date.now()+Math.random()));
 
 					client.set(jsessionid,hash,'EX',1800);
 					
+					//设置cookie
+					res.cookie('jsessionid',jsessionid,{maxAge:1800000,httpOnly:true});
+
 					res.status(200).end(jsessionid);
 				}else{
 					res.status(302).end();

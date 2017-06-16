@@ -11,7 +11,7 @@ const Comment_Schema = new Schema({
 						comment:String,
 						date_of_comm:Date
 					},
-					{collection:'data'});
+					{collection:'comment'});
 mongoose.model('Comment_Model',Comment_Schema);
 
 

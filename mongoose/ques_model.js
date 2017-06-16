@@ -7,7 +7,7 @@ const Ques_Schema = Schema({
 				user_Id:ObjectId,
 				ques_cont:String,
 				ques_date:Date
-			},{collection:'data'});
+			},{collection:'ques'});
 
 
 mongoose.model('Ques_Model',Ques_Schema);

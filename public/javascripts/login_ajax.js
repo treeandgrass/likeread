@@ -46,8 +46,6 @@ function SubmitAjax(formElement){
 xhr.onreadystatechange=function(){
 	if(xhr.readyState===XMLHttpRequest.DONE){
 		if(xhr.status===200){
-			//重定向到首页
-			document.cookie='jsessionid='+xhr.responseText;
 			window.location.href="index";
 		}else if(xhr.status===302){
 			

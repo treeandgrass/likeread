@@ -21,7 +21,7 @@ const  UserSchema=new Schema({
 	like:Array,
 	hash:String,
 	active:Number
-},{collection:'data'});
+},{collection:'user'});
 
 mongoose.model('User_Model',UserSchema);
 

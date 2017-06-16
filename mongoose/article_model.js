@@ -10,6 +10,6 @@ const Article_Schema= new Schema({
 								state:Number,
 								be_like:Array
 								},
-								{collection:'data'});
+								{collection:'article'});
 
-mongoose.model('Artcile_Model',Article_Schema);
+mongoose.model('Article_Model',Article_Schema);

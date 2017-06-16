@@ -8,7 +8,7 @@ const Info_Schema=new Schema({
 					user_Id:ObjectId,
 					info:String,
 					info_date:Date
-				},{collection:'data'});
+				},{collection:'info'});
 
 
 mongoose.model('Info_Model',Info_Schema);

@@ -8,7 +8,7 @@ const Column_Schema = new Schema({
 									column_name:String,
 									article_id:ObjectId
 								},
-								{collection:'data'});
+								{collection:'cloumn'});
 
 mongoose.model('Column_Model',Column_Schema);
 

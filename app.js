@@ -11,6 +11,9 @@ const join = require('path').join;
 const fs = require('fs');
 const ejs = require('ejs');
 
+const baseinterceptor = require('./interceptor/baseinterceptor.js');
+
+
 //实现模块热加载
 const webpack=require('webpack');
 const webpackConfig = require('./public/javascripts/webpack.config');
@@ -62,6 +65,11 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+//拦截
+app.use(baseinterceptor);
+
+
+
 
 
 

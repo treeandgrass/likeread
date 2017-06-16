@@ -9,7 +9,7 @@ const Ans_Schema=new Schema({
 					ques_id:ObjectId,
 					ans_cont:String,
 					ans_date:Date
-				},{collection:'data'});
+				},{collection:'answer'});
 
 
 mongoose.model('Ans_Schema',Ans_Schema);

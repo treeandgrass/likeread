@@ -5,6 +5,7 @@ const config={
 		entry:{
 			login:'./public/javascripts/views/login.js',
 			register:'./public/javascripts/views/register.js',
+			index:'./public/javascripts/views/index.js',
 			vendor:['react','react-dom']
 		},
 

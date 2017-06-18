@@ -27,14 +27,18 @@ body,html{
 
 .middle_div_container{
 	width:800px;
-	height:1000px;
-	background-color: yellow;
+	background-color:rgb(255,255,255);
 }
 
 .right_div_container{
 	width:200px;
 	height:500px;
 	background-color:rgb(245,243,240);
+}
+
+li{
+	height:200px;
+	list-style-type: none;
 }
 
 

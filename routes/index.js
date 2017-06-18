@@ -12,10 +12,9 @@ router.get('/', function(req, res, next) {
 
 
 router.post('/page',(req,res,next)=>{
-	debugger;
-	var article_model_exec=Article_Model.find({}).sort({date:-1}).skip(req.body).limit(20);
+	var article_model_exec=Article_Model.find({}).sort({date:-1}).skip(req.body.position).limit(20);
 	article_model_exec.exec((err,result)=>{
-		res.end(result);
+		res.end(JSON.stringify(result));
 	});
 });
 

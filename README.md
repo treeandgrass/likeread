@@ -17,6 +17,8 @@
 
 * cd likeread
 
+* 根据[博客](http://blog.csdn.net/mymy_blog/article/details/72810487)，修改[配置](https://github.com/treeandgrass/likeread/blob/master/utils/mailsend.js)
+
 * supervisor --debug ./bin/www   (默认已全局安装 Supervisor)
 
 * node-inspector    (默认已安装node-inspector，新启一个命令行窗口运行)

@@ -10,6 +10,7 @@ const mongoose = require('mongoose');
 const join = require('path').join;
 const fs = require('fs');
 const ejs = require('ejs');
+var app = express();
 
 const baseinterceptor = require('./interceptor/baseinterceptor.js');
 
@@ -28,15 +29,15 @@ fs.readdirSync(models)
   .forEach(file => require(join(models, file)));
 
 
-// router
-// const users = require('./routes/users.js');
+
+//router
 const index = require('./routes/index.js');
 const login = require('./routes/login.js');
-
 const register = require('./routes/register.js');
-
-
-var app = express();
+const checkloginstate=require('./routes/common.js');
+const nav_index=require('./routes/nav_index.js');
+const articleHandle=require('./routes/articleHandle.js');
+const personInfoHandle=require('./routes/personInfoHandle.js');
 
 
 
@@ -65,23 +66,24 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-//拦截
+
+
+
+
+
+//拦截器，做权限处理
 app.use(baseinterceptor);
 
 
 
-
-
-
 //路由
-
 app.use('/index', index);
 app.use('/login',login);
 app.use('/register',register);
-
-
-
-
+app.use('/checklogin',checkloginstate);
+app.use('/nav_index',nav_index);
+app.use('/articleHandle',articleHandle);
+app.use('/personInfoHandle',personInfoHandle);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -89,6 +91,7 @@ app.use(function(req, res, next) {
   err.status = 404;
   next(err);
 });
+
 
 // error handler
 app.use(function(err, req, res, next) {

@@ -7,8 +7,8 @@ const client = require('../redis/rediscon.js');
 module.exports=function(req,res,next){
 
 	if(urlfilter(req.originalUrl)){
-		if(req.cookies.jsessionid){
-			client.get(req.cookies.jsessionid,(err,hash)=>{
+		if(req.cookies.tokenId){
+			client.get(req.cookies.tokenId,(err,hash)=>{
 				if(hash){
 					const _next=next;
 					_next();

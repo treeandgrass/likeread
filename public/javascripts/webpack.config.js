@@ -5,7 +5,9 @@ const config={
 		entry:{
 			login:'./public/javascripts/views/login.js',
 			register:'./public/javascripts/views/register.js',
+			navindex:'./public/javascripts/views/nav_index.js',
 			index:'./public/javascripts/views/index.js',
+			articleWrite:'./public/javascripts/views/articleWrite.js',
 			vendor:['react','react-dom']
 		},
 
@@ -20,8 +22,23 @@ const config={
 		      {
 		        test: /\.(js|jsx)$/,
 		        loader: 'babel-loader'
-		      }
+		      },
+			  {
+				test:/\.css$/,
+				use:[
+					'style-loader',
+					'css-loader'
+				]		  
+			  },
+			  {
+				test:'/\.(png|svg|jpg|gif)$/',
+				use:[
+					'file-loader'
+				]
+				  
+			  }
 		    ]
+			
 		 },
 		plugins:[
 			new webpack.optimize.CommonsChunkPlugin({

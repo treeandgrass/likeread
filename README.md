@@ -36,7 +36,9 @@
 
 ## 进度
 
-* （2017-5-24）完成[登录](https://github.com/treeandgrass/likeread/blob/master/routes/login.js)功能
-* （2017-5-29）完成[注册](https://github.com/treeandgrass/likeread/blob/master/routes/register.js)
-* （2017-5-31）完成[邮箱验证](https://github.com/treeandgrass/likeread/blob/master/utils/mailsend.js)
-*  (2017-6-18)完成[首页懒加载](https://github.com/treeandgrass/likeread/blob/master/views/index.html)
+*  完成[登录](https://github.com/treeandgrass/likeread/blob/master/routes/login.js)功能
+*  完成[注册](https://github.com/treeandgrass/likeread/blob/master/routes/register.js)
+*  完成[邮箱验证](https://github.com/treeandgrass/likeread/blob/master/utils/mailsend.js)
+*  完成[首页懒加载](https://github.com/treeandgrass/likeread/blob/master/views/index.html)
+*  完成[导航](https://github.com/treeandgrass/likeread/blob/master/public/javascripts/views/nav_index.js)
+*  完成[markdown编辑功能](https://github.com/treeandgrass/likeread/blob/master/views/articleWrite.html)

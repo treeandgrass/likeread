@@ -1,0 +1,144 @@
+
+
+.bombbox_shadow{
+	margin:0;
+	padding:0;
+	width:100%;
+	height:100%;
+	background-color:black;
+	position:absolute;
+	z-index:100;
+	top:0;
+	left:0;
+	background-color: rgba(0,0,0,0.5)!important;
+	background-color: #000;
+	filter:Alpha(opacity=50);
+}
+
+.bombbox_container{
+	width:540px;
+	height:300px;
+	background-color: rgb(255,255,255);
+	border:1px solid;
+	border-radius:3px;
+	position:absolute;
+	left:50%;
+	top:20%;
+	margin-left:-270px;
+	padding-left:10px;
+}
+
+.bombbox_title_box{
+	height:50px;
+	line-height:50px;
+	color:black;
+	font-size:20px;
+}
+
+
+
+.bombbox_container div{
+	height:70px;
+	margin-top:18px;
+	clear:both;
+}
+
+.bombbox_container p{
+	width:350px;	
+	height:50px;
+}
+
+.bombbox_container ul{
+	width:580px;
+	height:40px;
+	list-style-type:none;
+}
+
+.bombbox_container ul li{
+	float:left;
+	width:100px;
+	height:40px;
+	line-height:40px;
+	font-size:20px;
+	border-bottom: 1px solid;
+	text-align:center;
+	border-color:rgb(240,240,240);
+}
+
+
+/*默认设置本地上传为默认选中*/
+.bombbox_container ul li:first-child{
+	border-top:1px solid;
+	border-right:1px solid;
+	border-bottom:none;
+	border-left:1px solid;
+	cursor:pointer;
+	border-color:rgb(240,240,240);
+}
+
+.bombbox_container ul li:nth-child(2){
+	cursor:pointer;
+}
+
+
+
+.bombbox_container ul .station{
+	width:300px;
+	height:40px;
+}
+
+
+.bombbox_container .nfileinput{
+	width:370px;
+	height:30px;
+	margin-top:10px;
+	border-color:rgb(240,240,240);
+}
+
+.bombbox_container .nbutton{
+	width:80px;
+	height:36px;
+	background-color:rgb(0,103,65);
+}
+
+/*.bombbox_container .filebutton{
+	width:50px;
+	height:30px;
+	border:1px solid;
+	border-radius:2px rgb(240,240,240);
+}*/
+
+.bombbox_container .lrfileInput{
+	display: none;
+	width:500px;
+	margin-top:10px;
+	height:30px;
+	border-color:rgb(240,240,240);
+}
+
+
+.bombbox_container 	button{
+	margin-right:20px;
+}
+
+.bombbox_container 	.cancleButton{
+	width:80px;
+	height:40px;
+	border:1px solid;
+	border-radius:5px;
+	color:black;
+	float:right;
+	background-color: rgb(250,250,250);
+}
+
+.bombbox_container .insertButton{
+	width:80px;
+	height:40px;
+	border:1px solid;
+	color:rgb(255,255,255);
+	border-radius:5px;
+	float:right;
+	background-color:rgb(0,103,65);
+}
+
+

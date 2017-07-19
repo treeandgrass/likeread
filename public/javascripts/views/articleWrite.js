@@ -10,4 +10,4 @@ var simplemde =new SimpleMDE({
 	});
 
 //初始化BoxbBox,依赖前面的SimpleMDE
-var bombbox = new BombBox('http://localhost:3000/articleWrite/fileUpload');//网址为图片上传网址
+var bombbox = new BombBox(simplemde,'http://localhost:3000/articleHandle/fileUpload');//网址为图片上传网址

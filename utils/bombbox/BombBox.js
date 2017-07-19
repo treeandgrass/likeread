@@ -6,13 +6,6 @@ require('./BombBox.css');
 	typeof define==='function' && define.amd? define(factory) :
 	(global.BombBox=factory()) 
 })(this,function(){ 'use strict';
-		
-	
-		//保存数据
-		var ImageURL;
-
-
-		var oldClickEvent;
 
 		
 		function BombBox(editor,URL){
@@ -24,10 +17,26 @@ require('./BombBox.css');
 
 			//在初始化时覆盖元素的onclick事件
 			var img=document.querySelector('[class="fa fa-picture-o"]');
-			oldClickEvent=img.onclick;
+			var oldClickEvent=img.onclick;
 			img.onclick=function(e){
 				self.createBombBox();
 			}
+
+			//数据劫持，当BombBox的imageURL改变时，调用oldClick事件
+			Object.defineProperty(this,'imageURL',{
+				enumerable:true,
+				configurable:true,
+				get:function(){
+					return this.imageURL;
+				},
+				set:function(newVal){
+					this.value=newVal;
+					self.editor.options.imageURL=newVal;
+					document.body.removeChild(transparentDiv);//移除BombBox
+					var event=new Event('click',{"bubbles":true,"cancelable":true});//oldClick为simplemde中方法，需要event对象
+					oldClickEvent(event);
+				}
+			});
 
 		}
 
@@ -62,7 +71,7 @@ require('./BombBox.css');
 					
 						<div>
 							<input class="nfileinput" id="nurl" placeholder="本地文件"/>
-							<input id="displayFileInput" type="file" style="display:none;"/>
+							<input id="displayFileInput" name="uploadimage" accept="image/*" type="file" style="display:none;"/>
 							<button id="selctedImg" class="nbutton">选择图片</button>
 							<input id="lrurl" placeholder="图片网址" type="text" class="lrfileInput"/>
 						</div>
@@ -85,11 +94,12 @@ require('./BombBox.css');
 
 		/**
 		*
-		*以事件委托的方式处理事件
+		*添加事件监听
 		*
 		*/
 		function eventDelegation(self){
 
+				//以事件委托的方式处理点击事件
 				transparentDiv.addEventListener('click',function(event){
 
 					var target=event.target;
@@ -105,10 +115,13 @@ require('./BombBox.css');
 							fileUploadHandler(self,event);
 							break;
 						case 'shadowbombbox': //放弃插入图片
-							cancleHandler(self,event);
+							removeBombBox(self,event);
 							break;
 						case 'cancel': //放弃插入图片
-							cancleHandler(self,event);
+							removeBombBox(self,event);
+							break;
+						case 'selctedImg':
+							selectedImg(self,event);
 							break;
 						default:   //默认不做任何操作
 							break;
@@ -116,8 +129,35 @@ require('./BombBox.css');
 					}
 					
 			});
+
+
+			//为文件<input id="displayFileInput">添加onchange事件，显示图片
+			var imageInput=transparentDiv.querySelector('input[id=displayFileInput]');
+
+			imageInput.addEventListener('change',function showFileName(event){
+				var fileName=event.target.files[0].name;
+				var nameInput=document.querySelector('input[id=nurl]');
+				nameInput.value=fileName;
+			});
+
 		}
 		
+
+
+		/**
+		*点击激发<input id="selctedImg type="file"/>
+		**/
+		function selectedImg(self,event){
+			//阻止默认事件
+			event.preventDefault();
+			event.stopPropagation();
+
+			var imgInput=document.querySelector('input[id="displayFileInput"]');
+			imgInput.click();
+		} 
+
+
+	
 
 		/**
 		*
@@ -171,7 +211,8 @@ require('./BombBox.css');
 
 		var xhr;
 
-		function httpRquest(Method,URL,ASYN,Data){
+		function httpRquest(self,Method,URL,ASYN,Data){
+
 			//创建xhr对象
 			if(window.XMLHttpRequest){
 				xhr=new XMLHttpRequest();
@@ -189,15 +230,15 @@ require('./BombBox.css');
 				
 			}
 
-
 			xhr.open(Method,URL,ASYN);
+			
 
-			xhr.send(data);
+			xhr.send(Data);
 
 			//接受返回的数据
 			xhr.onreadystatechange=function(){
 				if(xhr.readyState===XMLHttpRequest.DONE&&xhr.status===200){
-					ImageURL=xhr.responseText;
+					self.imageURL=xhr.responseText;
 				}
 			}
 
@@ -210,8 +251,9 @@ require('./BombBox.css');
 		*/
 		function fileUploadHandler(self,event){
 			var target=event.target;
-			var NFileInput=transparentDiv.querySelector('[name="nurl"]');
-			var LRFileInput=transparentDiv.querySelector('[name="lrurl"]');
+			var NFileInput=transparentDiv.querySelector('[id="nurl"]');
+			var LRFileInput=transparentDiv.querySelector('[id="lrurl"]');
+			var FileInput=document.querySelector('input[id="displayFileInput"]');
 
 			var formData;
 			if(window.FormData){
@@ -221,19 +263,15 @@ require('./BombBox.css');
 			}
 
 			if(NFileInput.style.display==='none'){
-				formData.appned(LRFileInput);
+				formData.appned('lrFileURL',LRFileInput);
 			}else{
-				formData.append(NFileInput);
+				formData.append('nFileName',NFileInput);
+				var file=FileInput.files[0];
+				formData.append(file.name,file);
 			}
 
 			//URL为传入的参数
-			httpRquest('POST',self.URL,true,formData);
-
-			//更新editor的URL
-			self.options.promptURLs=ImageURL;
-
-			//图片上传成功执行原有事件
-			oldClickEvent(event);
+			httpRquest(self,'POST',self.URL,true,formData,'multipart/form-data');
 		}
 
 
@@ -241,7 +279,7 @@ require('./BombBox.css');
 		*取消事件处理器
 		*
 		*/
-		function cancleHandler(self,event){
+		function removeBombBox(self,event){
 			document.body.removeChild(transparentDiv);
 		}
 

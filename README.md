@@ -43,3 +43,4 @@
 *  完成[导航](https://github.com/treeandgrass/likeread/blob/master/public/javascripts/views/nav_index.js)
 *  完成[markdown编辑功能](https://github.com/treeandgrass/likeread/blob/master/views/articleWrite.html)
 * 完成[弹框图片上传](https://github.com/treeandgrass/likeread/tree/master/utils/bombbox)
+* 完成[文章实时上传]（https://github.com/treeandgrass/likeread/blob/master/routes/articleContentHandle.js）

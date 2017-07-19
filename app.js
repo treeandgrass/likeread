@@ -38,7 +38,7 @@ const checkloginstate=require('./routes/common.js');
 const nav_index=require('./routes/nav_index.js');
 const articleHandle=require('./routes/articleHandle.js');
 const personInfoHandle=require('./routes/personInfoHandle.js');
-
+const articleContentHandle=require('./routes/articleContentHandle.js');//用于文章实时更新
 
 
 
@@ -76,6 +76,7 @@ app.use(baseinterceptor);
 
 
 
+
 //路由
 app.use('/index', index);
 app.use('/login',login);
@@ -84,6 +85,8 @@ app.use('/checklogin',checkloginstate);
 app.use('/nav_index',nav_index);
 app.use('/articleHandle',articleHandle);
 app.use('/personInfoHandle',personInfoHandle);
+
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

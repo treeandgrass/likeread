@@ -7,6 +7,7 @@
 * ES6
 * Mongoose
 * React.js
+* Socket.IO
 * WebPack
 * Babel
 * node-inspector

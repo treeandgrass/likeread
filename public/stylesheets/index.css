@@ -28,12 +28,14 @@ body,html{
 .middle_div_container{
 	width:800px;
 	background-color:rgb(255,255,255);
+	margin-top:100px;
 }
 
 .right_div_container{
 	width:200px;
 	height:500px;
 	background-color:rgb(245,243,240);
+	margin-top:62px;
 }
 
 li{

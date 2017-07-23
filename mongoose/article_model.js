@@ -2,10 +2,11 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const ObjectId = mongoose.Schema.Types.ObjectId;
 const Article_Schema= new Schema({
-								article_id:ObjectId,
+								article_id:String,
 								title:String,
 								content:String,
 								date_of_pub:Date,
+								author:String,
 								state:Number,
 								be_like:Array
 								},

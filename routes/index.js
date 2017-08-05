@@ -12,9 +12,21 @@ router.get('/', function(req, res, next) {
 
 
 router.post('/page',(req,res,next)=>{
-	var article_model_exec=Article_Model.find({}).sort({date:-1}).skip(req.body.position).limit(20);
-	article_model_exec.exec((err,result)=>{
+	var article_model_exec=Article_Model.aggregate([{
+		$lookup:
+     	{
+       		from:'user',
+       		localField:'author',
+       		foreignField:'hash',
+       		as:'user'
+     	},
+	},
+	{ $skip:req.body.position},
+	{$sort:{date_of_pub:-1}}],
+	(err,result)=>{
+		//查询
 		res.end(JSON.stringify(result));
+	
 	});
 });
 

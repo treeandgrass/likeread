@@ -5,7 +5,8 @@
 	//判断离底部的距离
 
 	function check_bottom(){
-		var currentPosition=document.documentElement.clientHeight+(document.documentElement.scrollTop||document.body.scrollTop);
+		var currentPosition=document.documentElement.clientHeight
+				+(document.documentElement.scrollTop||document.body.scrollTop);
 		if(document.documentElement.scrollHeight<=currentPosition){
 			return true;
 		}else{
@@ -18,15 +19,30 @@
 
 	//DOM操作
 	function insertPageToDom(data){
+
 		var jsonArray=JSON.parse(data);
 		var divElement = document.createElement('div');
 		var ulElement=document.createElement('ul');
 		jsonArray.forEach(function(obj){
 			var liElement=document.createElement("li");
-			liElement.innerHTML=`<p><h2>${obj.title}</h2></p>
-			<p>${obj.content}</p>
-			<p>${obj.date_of_pub}</p>`;
+
+			var userimg=obj.user.userimg?obj.user.userimg:'http://127.0.0.1:3000/images/common.jpg'
+			var date_of_pub=(obj.date_of_pub?new Date(obj.date_of_pub):new Date()).toLocaleDateString().replace(/\//g,'-');
+			var username=obj.user.username?obj.user.username:'';
+			var title=obj.title?obj.title:'';
+			var content=obj.content?obj.content.substring(0,100):'';
+
+			liElement.innerHTML=
+			`<p>
+			<img src=${userimg}/>
+			<span>${date_of_pub}</span>
+			<span>${username}</span></p>
+			<p>${title}</p>
+			<p>${content}</p>
+			`;
+
 			ulElement.append(liElement);
+
 		});
 
 		divElement.append(ulElement);

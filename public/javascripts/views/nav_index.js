@@ -135,7 +135,7 @@ class ControllerComponent extends React.Component{
 	constructor(props){
 		super(props);
 		this.state={loginState:{username:null}};
-		this.URLS={writeURL:'articleHandle\/articleWrite',personURL:'personInfoHandle\/personPageMain',loginURL:'login',registerURL:'register',logoutURL:'loginout'};
+		this.URLS={writeURL:'articleHandle\/articleWrite',personURL:'personInfoHandle\/personPageMain',loginURL:'login',registerURL:'register',logoutURL:'logout'};
 		this.Ajax=Ajax.bind(this);
 	}
 

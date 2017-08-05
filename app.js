@@ -39,7 +39,7 @@ const nav_index=require('./routes/nav_index.js');
 const articleHandle=require('./routes/articleHandle.js');
 const personInfoHandle=require('./routes/personInfoHandle.js');
 const articleContentHandle=require('./routes/articleContentHandle.js');//用于文章实时更新
-
+const logout=require('./routes/logout.js');//退出
 
 
 //使用webpacl-dev-middleware
@@ -85,7 +85,7 @@ app.use('/checklogin',checkloginstate);
 app.use('/nav_index',nav_index);
 app.use('/articleHandle',articleHandle);
 app.use('/personInfoHandle',personInfoHandle);
-
+app.use('/logout',logout);
 
 
 // catch 404 and forward to error handler

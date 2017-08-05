@@ -76,6 +76,12 @@ router.get('/articleWrite',(req,res,next)=>{
 });
 
 
+/**
+*文章修改页面
+*/
+router.get('/articleModify',(req,res,next)=>{
+  
+});
 
 
 module.exports=router;

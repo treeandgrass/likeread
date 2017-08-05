@@ -46,4 +46,4 @@
 * 完成[弹框图片上传](https://github.com/treeandgrass/likeread/tree/master/utils/bombbox)
 * 完成[文章实时上传](https://github.com/treeandgrass/likeread/blob/master/routes/articleContentHandle.js)
 * 完成[注销和首页内容样式](https://github.com/treeandgrass/likeread/blob/master/routes/logout.js)
-* 完成[mongoose聚合查询并且排序](https://github.com/treeandgrass/likeread/blob/master/routes/index.js)
+* 完成[mongoose聚合查询与排序](https://github.com/treeandgrass/likeread/blob/master/routes/index.js)

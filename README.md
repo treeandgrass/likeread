@@ -2,7 +2,7 @@
 *likeread* 一个创作网站
 
 ## 技术
-* Node.js(v6.10.3)
+* Node.js(v6.11.1)
 * MongoDB 
 * ES6
 * Mongoose

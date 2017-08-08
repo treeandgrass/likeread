@@ -14,6 +14,7 @@
 * Supervisor
 
 ## 下载运行
+* node v6.11.1
 * git clone https://github.com/treeandgrass/likeread.git
 
 * cd likeread

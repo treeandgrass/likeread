@@ -19,6 +19,8 @@ module.exports=function(req,res,next){
 		}else{
 			res.redirect('/login');
 		}
+	}else if(/favicon\.ico/.test(req.url)){
+		res.end();//请求favicon.ico文件直接返回
 	}else{
 		next();
 	}

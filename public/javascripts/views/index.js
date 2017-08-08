@@ -26,19 +26,40 @@
 		jsonArray.forEach(function(obj){
 			var liElement=document.createElement("li");
 
-			var userimg=obj.user.userimg?obj.user.userimg:'http://127.0.0.1:3000/images/common.jpg'
-			var date_of_pub=(obj.date_of_pub?new Date(obj.date_of_pub):new Date()).toLocaleDateString().replace(/\//g,'-');
-			var username=obj.user.username?obj.user.username:'';
-			var title=obj.title?obj.title:'';
-			var content=obj.content?obj.content.substring(0,100):'';
+
+			var user=obj.user[0];
+
+			var userimg=user.userimg?user.userimg:'http://127.0.0.1:3000/images/common.jpg' //头像
+			var date_of_pub=(obj.date_of_pub?new Date(obj.date_of_pub):new Date()).toLocaleDateString().replace(/\//g,'-');//日期
+			var username=user.username?user.username:'';//作者名
+			var title=obj.title?obj.title:'';//标题
+			var content=obj.content?obj.content.substring(0,100):'';//简介
+			var articleId=obj.article_id; //文章id
+			var likeers = obj.be_like?obj.be_like:0; //喜欢人数
+			var followers=obj.followers?obj.followers:0; //收藏人数
+			var browse=obj.browse?obj.browse:0; //浏览人数
+
 
 			liElement.innerHTML=
-			`<p>
-			<img src=${userimg}/>
-			<span>${date_of_pub}</span>
-			<span>${username}</span></p>
-			<p>${title}</p>
-			<p>${content}</p>
+			`
+			<div>
+				<img src="${userimg}"/>
+				<div>
+					<span>${date_of_pub}</span>
+					<span>${username}</span>
+				</div>
+			</div>
+			<div>
+				<a href="articleHandle/articleIndex/${articleId}">${title}</a>
+			</div>
+			<div>
+				${content}
+			</div>
+			<div>
+				<span>${browse}</span>
+				<span>${likeers}</span>
+				<span>${followers}</span>
+			</div>
 			`;
 
 			ulElement.append(liElement);

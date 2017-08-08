@@ -8,8 +8,9 @@ const Article_Schema= new Schema({
 								date_of_pub:Date,
 								author:String,
 								state:Number,
-								be_like:Array,
-								followers:Array
+								be_like:Number,
+								followers:Number,
+								browse:Number
 								},
 								{collection:'article'});
 

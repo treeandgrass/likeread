@@ -67,12 +67,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-
-
-
-
 //拦截器，做权限处理
 app.use(baseinterceptor);
+
 
 
 

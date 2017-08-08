@@ -5,9 +5,8 @@ const Schema = mongoose.Schema;
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
 const Comment_Schema = new Schema({
-						id:ObjectId,
-						article_id:ObjectId,
-						user_id:ObjectId,
+						article_id:String,
+						user_id:String,
 						comment:String,
 						date_of_comm:Date
 					},

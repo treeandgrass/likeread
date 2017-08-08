@@ -21,7 +21,9 @@ var upload = multer({ storage: storage })
 
 
 
-router.get('/index',(req,res,next)=>{
+
+
+router.get('/articleIndex',(req,res,next)=>{
 
 });
 
@@ -52,26 +54,30 @@ router.get('/articleWrite',(req,res,next)=>{
   if(!tokenId){
     res.redirect('../index');
   }else{
-    const hashId=redis.get(tokenId);
-    const article_id=hash(hashId);
-    const articleModel=ArticleModel({
-      article_id:article_id,
-      date_of_pub:Date.now(),
-      hash:hashId,
-      state:0
-    });
+    redis.get(tokenId,function(err,reply){
 
-    articleModel.save((err,doc)=>{
-        if(err){
-          console.log(err);
-        }else{
-          var articleId=doc.article_id;
-          res.cookie('articleId',articleId);
-        }
+        const article_id=hash(reply);
 
-        //返回文章编辑页面
-        res.render('articleWrite.html');
-    });
+        const articleModel=ArticleModel({
+          article_id:article_id,
+          date_of_pub:Date.now(),
+          author:reply,
+          state:0
+        });
+
+        articleModel.save((err,doc)=>{
+            if(err){
+              console.log(err);
+            }else{
+              var articleId=doc.article_id;
+              res.cookie('articleId',articleId);
+            }
+
+            //返回文章编辑页面
+            res.render('articleWrite.html');
+        });
+
+      });
   } 
 });
 

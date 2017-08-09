@@ -56,9 +56,9 @@
 				${content}
 			</div>
 			<div>
-				<span>${browse}</span>
-				<span>${likeers}</span>
-				<span>${followers}</span>
+				<span class="iconfont_love"><a></a></span><span>${browse}</span>
+				<span class="iconfont_browse"><a></a></span><span>${likeers}</span>
+				<span class="iconfont_collection"><a></a></span><span>${followers}</span>
 			</div>
 			`;
 

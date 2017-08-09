@@ -90,7 +90,7 @@ body,html{
 }
 
 .middle_div_container ul li div:nth-child(3){
-	height:50px;
+	height:80px;
 	font-size:16px;
 	font-weight:300px;
 	line-height:25px;
@@ -109,4 +109,51 @@ body,html{
 }
 
 
+middle_div_container ul li .iconfont_browse{
+	display: inline-block;
+	width:20px;
+	height:20px;
+}
 
+.middle_div_container ul li div:nth-child(4) span{
+	vertical-align: center;
+	margin-right:7px;
+	display: inline-block;
+	height:20px;
+}
+
+
+.middle_div_container ul li div:nth-child(4) span a{
+	text-decoration: none;
+	display: inline-block;
+	border:none;
+	position: relative;
+	top:4px;
+}
+
+.middle_div_container ul li div:nth-child(4) .iconfont_love a::before {
+	content:"";
+	background:url(../images/love.svg);
+	display: inline-block;
+	width:20px;
+	height:20px;
+	background-size: 100% 100%;
+}
+
+.middle_div_container ul li div:nth-child(4) .iconfont_browse a::before{
+	display: inline-block;
+	content:"";
+	background: url(../images/browse1.png);
+	width:20px;
+	height:20px;
+	background-size: 100% 100%;
+}
+
+.middle_div_container ul li  div:nth-child(4) .iconfont_collection a::before{
+	display: inline-block;
+	content:" ";
+	background:url(../images/collection.svg);
+	width:20px;
+	height:20px;
+	background-size: 100% 100%;
+}

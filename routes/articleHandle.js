@@ -5,6 +5,10 @@ const mongoose=require('mongoose');
 const ArticleModel=mongoose.model('Article_Model');
 const hash=require('../utils/hash.js');
 
+
+
+
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, '../likeread/uploads')
@@ -22,10 +26,36 @@ var upload = multer({ storage: storage })
 
 
 
-
+/**
+* 文章页面
+*/
 router.get('/articleIndex',(req,res,next)=>{
 
+  //浏览次数增加1
+   ArticleModel.update({articleId:req.cookies.articleId},{$inc:{browse:1}},(err)=>{
+      
+   });
+
+   res.send('articlePage.html');
+
 });
+
+
+
+//服务端渲染
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 router.get('/search',(req,res,next)=>{
 

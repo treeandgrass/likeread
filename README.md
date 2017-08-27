@@ -13,7 +13,6 @@
 * Babel
 * node-inspector
 * Supervisor
-* MongoDB
 * Redis
 ## 下载运行
 * 安装MongoDB

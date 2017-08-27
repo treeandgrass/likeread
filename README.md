@@ -13,9 +13,12 @@
 * Babel
 * node-inspector
 * Supervisor
-
+* MongoDB
+* Redis
 ## 下载运行
-* node v6.11.1
+* 安装MongoDB
+* 安装Redis
+* node v6.11.1及以上
 * git clone https://github.com/treeandgrass/likeread.git
 
 * cd likeread

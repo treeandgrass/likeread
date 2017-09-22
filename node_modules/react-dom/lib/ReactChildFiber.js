@@ -30,7 +30,6 @@ var createReifiedYield = ReactReifiedYield.createReifiedYield;
 var isArray = Array.isArray;
 
 function ChildReconciler(shouldClone) {
-
   function createSubsequentChild(returnFiber, existingChild, previousSibling, newChildren, priority) {
     if (typeof newChildren !== 'object' || newChildren === null) {
       return previousSibling;

@@ -3,10 +3,10 @@ const multer=require('multer');
 const redis=require('../redis/rediscon.js');
 const mongoose=require('mongoose');
 const ArticleModel=mongoose.model('Article_Model');
+const UserModel=mongoose.model('User_Model');
 const hash=require('../utils/hash.js');
-
-
-
+const serverRender=require('../public/javascripts/dist/server.js').serverRender;
+const markdown=require('markdown').markdown;
 
 
 const storage = multer.diskStorage({
@@ -27,33 +27,39 @@ var upload = multer({ storage: storage })
 
 
 /**
-* 文章页面
+* article page
 */
-router.get('/articleIndex',(req,res,next)=>{
+router.get('/articleIndex/*',(req,res,next)=>{
 
-  //浏览次数增加1
+   // update browse number
    ArticleModel.update({articleId:req.cookies.articleId},{$inc:{browse:1}},(err)=>{
-      
-   });
-
-   res.send('articlePage.html');
-
+    const articleId=req.originalUrl.split('\/').pop();
+    ArticleModel.aggregate([{
+      $lookup:
+         {
+             from:'user',
+             localField:'author',
+             foreignField:'hash',
+             as:'user'
+         }
+    },{
+      $match:{article_id:articleId}
+    }],
+    (err,result)=>{
+      //查询
+        const ret=result[0];//get first value of array
+        ret.content=markdown.toHTML(JSON.stringify(ret.content));//transfer markdown to html
+        var tempUser=ret.user[0];
+        var user=Object.create(null);
+        user.username=tempUser.username;
+        user.url=tempUser.url;
+        ret.user=user;
+        serverRender(req,res,ret);// server render
+      });
+    
+    });
+		
 });
-
-
-
-//服务端渲染
-
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -340,7 +340,6 @@ function setResponderAndExtractTransfer(topLevelType, targetInst, nativeEvent, n
   EventPropagators.accumulateDirectDispatches(grantEvent);
   var blockHostResponder = executeDirectDispatch(grantEvent) === true;
   if (responderInst) {
-
     var terminationRequestEvent = ResponderSyntheticEvent.getPooled(eventTypes.responderTerminationRequest, responderInst, nativeEvent, nativeEventTarget);
     terminationRequestEvent.touchHistory = ResponderTouchHistoryStore.touchHistory;
     EventPropagators.accumulateDirectDispatches(terminationRequestEvent);
@@ -411,7 +410,6 @@ function noResponderTouches(nativeEvent) {
 }
 
 var ResponderEventPlugin = {
-
   /* For unit testing only */
   _getResponderID: function () {
     return responderInst ? responderInst._rootNodeID : null;

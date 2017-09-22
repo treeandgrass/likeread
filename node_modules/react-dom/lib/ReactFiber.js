@@ -47,7 +47,6 @@ var _require = require('./ReactPriorityLevel'),
 //    compatible.
 var createFiber = function (tag, key) {
   return {
-
     // Instance
 
     tag: tag,
@@ -83,7 +82,6 @@ var createFiber = function (tag, key) {
     progressedChild: null,
 
     alternate: null
-
   };
 };
 

@@ -20,7 +20,6 @@ var _require = require('./ReactFiberUpdateQueue'),
     callCallbacks = _require.callCallbacks;
 
 module.exports = function (config) {
-
   var updateContainer = config.updateContainer;
   var commitUpdate = config.commitUpdate;
 

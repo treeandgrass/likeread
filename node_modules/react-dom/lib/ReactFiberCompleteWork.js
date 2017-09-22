@@ -26,7 +26,6 @@ var IndeterminateComponent = ReactTypeOfWork.IndeterminateComponent,
 
 
 module.exports = function (config) {
-
   var createInstance = config.createInstance;
   var prepareUpdate = config.prepareUpdate;
 
@@ -193,7 +192,6 @@ module.exports = function (config) {
       case YieldComponent:
         // Does nothing.
         return null;
-
       // Error cases
       case IndeterminateComponent:
         throw new Error('An indeterminate component should have become determinate before completing.');

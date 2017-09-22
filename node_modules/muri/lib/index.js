@@ -236,6 +236,4 @@ function parse (uriString) {
  * Version
  */
 
-module.exports.version = JSON.parse(
-  require('fs').readFileSync(__dirname + '/../package.json', 'utf8')
-).version;
+module.exports.version = require('../package.json').version;

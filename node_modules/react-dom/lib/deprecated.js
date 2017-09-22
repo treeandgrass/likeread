@@ -13,7 +13,7 @@
 
 var _assign = require('object-assign');
 
-var warning = require('fbjs/lib/warning');
+var lowPriorityWarning = require('./lowPriorityWarning');
 
 /**
  * This will log a single deprecation notice per function and forward the call
@@ -30,12 +30,12 @@ function deprecated(fnName, newModule, newPackage, ctx, fn) {
   var warned = false;
   if (process.env.NODE_ENV !== 'production') {
     var newFn = function () {
-      process.env.NODE_ENV !== 'production' ? warning(warned,
+      lowPriorityWarning(warned,
       /* eslint-disable no-useless-concat */
       // Require examples in this string must be split to prevent React's
       // build tools from mistaking them for real requires.
       // Otherwise the build tools will attempt to build a '%s' module.
-      'React.%s is deprecated. Please use %s.%s from require' + '(\'%s\') ' + 'instead.', fnName, newModule, fnName, newPackage) : void 0;
+      'React.%s is deprecated. Please use %s.%s from require' + "('%s') " + 'instead.', fnName, newModule, fnName, newPackage);
       /* eslint-enable no-useless-concat */
       warned = true;
       return fn.apply(ctx, arguments);

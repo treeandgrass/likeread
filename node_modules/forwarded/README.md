@@ -10,6 +10,10 @@ Parse HTTP X-Forwarded-For header
 
 ## Installation
 
+This is a [Node.js](https://nodejs.org/en/) module available through the
+[npm registry](https://www.npmjs.com/). Installation is done using the
+[`npm install` command](https://docs.npmjs.com/getting-started/installing-npm-packages-locally):
+
 ```sh
 $ npm install forwarded
 ```
@@ -41,13 +45,13 @@ $ npm test
 
 [MIT](LICENSE)
 
-[npm-image]: https://img.shields.io/npm/v/forwarded.svg?style=flat
+[npm-image]: https://img.shields.io/npm/v/forwarded.svg
 [npm-url]: https://npmjs.org/package/forwarded
-[node-version-image]: https://img.shields.io/node/v/forwarded.svg?style=flat
+[node-version-image]: https://img.shields.io/node/v/forwarded.svg
 [node-version-url]: http://nodejs.org/download/
-[travis-image]: https://img.shields.io/travis/jshttp/forwarded.svg?style=flat
+[travis-image]: https://img.shields.io/travis/jshttp/forwarded/master.svg
 [travis-url]: https://travis-ci.org/jshttp/forwarded
-[coveralls-image]: https://img.shields.io/coveralls/jshttp/forwarded.svg?style=flat
+[coveralls-image]: https://img.shields.io/coveralls/jshttp/forwarded/master.svg
 [coveralls-url]: https://coveralls.io/r/jshttp/forwarded?branch=master
-[downloads-image]: https://img.shields.io/npm/dm/forwarded.svg?style=flat
+[downloads-image]: https://img.shields.io/npm/dm/forwarded.svg
 [downloads-url]: https://npmjs.org/package/forwarded

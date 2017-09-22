@@ -11,9 +11,10 @@ There's also an
 Chrome and probably Safari).
 
 #### Note:
-- release versions of `uglify-js` only support ECMAScript 5 (ES5). If you wish to minify
-ES2015+ (ES6+) code then please use the [harmony](#harmony) development branch.
-- Node 7 has a known performance regression and runs `uglify-js` twice as slow.
+- `uglify-js` only supports ECMAScript 5 (ES5).
+- Support for `const` is [present but incomplete](#support-for-const), and may not be
+  transformed properly.
+- Those wishing to minify ES2015+ (ES6+) should use the `npm` package [**uglify-es**](https://github.com/mishoo/UglifyJS2/tree/harmony).
 
 Install
 -------
@@ -28,12 +29,6 @@ From NPM for use as a command line app:
 From NPM for programmatic use:
 
     npm install uglify-js
-
-From Git:
-
-    git clone git://github.com/mishoo/UglifyJS2.git
-    cd UglifyJS2
-    npm link .
 
 Usage
 -----
@@ -358,6 +353,9 @@ to set `true`; it's effectively a shortcut for `foo=true`).
 - `unsafe_proto` (default: false) -- optimize expressions like
   `Array.prototype.slice.call(a)` into `[].slice.call(a)`
 
+- `unsafe_regexp` (default: false) -- enable substitutions of variables with
+  `RegExp` values the same way as if they are constants.
+
 - `conditionals` -- apply optimizations for `if`-s and conditional
   expressions
 
@@ -441,12 +439,18 @@ to set `true`; it's effectively a shortcut for `foo=true`).
   compressor from discarding function names.  Useful for code relying on
   `Function.prototype.name`. See also: the `keep_fnames` [mangle option](#mangle).
 
-- `passes` -- default `1`. Number of times to run compress. Use an
-  integer argument larger than 1 to further reduce code size in some cases.
-  Note: raising the number of passes will increase uglify compress time.
+- `passes` -- default `1`. Number of times to run compress with a maximum of 3.
+  In some cases more than one pass leads to further compressed code.  Keep in
+  mind more passes will take more time.
 
 - `keep_infinity` -- default `false`. Pass `true` to prevent `Infinity` from
   being compressed into `1/0`, which may cause performance issues on Chrome.
+
+- `side_effects` -- default `true`. Pass `false` to disable potentially dropping
+  functions marked as "pure".  A function call is marked as "pure" if a comment
+  annotation `/*@__PURE__*/` or `/*#__PURE__*/` immediately precedes the call. For
+  example: `/*@__PURE__*/foo();`
+
 
 ### The `unsafe` option
 
@@ -983,19 +987,9 @@ The `source_map_options` (optional) can contain the following properties:
   [compressor]: http://lisperator.net/uglifyjs/compress
   [parser]: http://lisperator.net/uglifyjs/parser
 
-#### Harmony
+#### Support for `const`
 
-If you wish to use the experimental [harmony](https://github.com/mishoo/UglifyJS2/commits/harmony)
-branch to minify ES2015+ (ES6+) code please use the following in your `package.json` file:
-
-```
-"uglify-js": "git+https://github.com/mishoo/UglifyJS2.git#harmony"
-```
-
-or to directly install the experimental harmony version of uglify:
-
-```
-npm install --save-dev uglify-js@github:mishoo/UglifyJS2#harmony
-```
-
-See [#448](https://github.com/mishoo/UglifyJS2/issues/448) for additional details.
+`const` in `uglify-js@2.x` has function scope and as such behaves much like
+`var` - unlike `const` in ES2015 (ES6) which has block scope. It is recommended
+to avoid using `const` for this reason as it will have undefined behavior when
+run on an ES2015 compatible browser.

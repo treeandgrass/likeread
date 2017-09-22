@@ -42,7 +42,6 @@ var _require4 = require('./ReactFiberUpdateQueue'),
 var ReactInstanceMap = require('./ReactInstanceMap');
 
 module.exports = function (config, getScheduler) {
-
   function markChildAsProgressed(current, workInProgress, priorityLevel) {
     // We now have clones. Let's store them as the currently progressed work.
     workInProgress.progressedChild = workInProgress.child;

@@ -19,7 +19,8 @@ const  UserSchema=new Schema({
 	followed:Array,
 	like:Array,
 	hash:String,
-	active:Number
+	active:Number,
+	url:String
 },{collection:'user'});
 
 mongoose.model('User_Model',UserSchema);

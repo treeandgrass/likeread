@@ -111,7 +111,7 @@ var WHITESPACE_CHARS = makePredicate(characters(" \u00a0\n\r\t\f\u000b\u200b\u20
 
 var NEWLINE_CHARS = makePredicate(characters("\n\r\u2028\u2029"));
 
-var PUNC_BEFORE_EXPRESSION = makePredicate(characters("[{(,.;:"));
+var PUNC_BEFORE_EXPRESSION = makePredicate(characters("[{(,;:"));
 
 var PUNC_CHARS = makePredicate(characters("[]{}(),;:"));
 
@@ -285,7 +285,11 @@ function tokenizer($TEXT, filename, html5_comments, shebang) {
         S.regex_allowed = ((type == "operator" && !UNARY_POSTFIX(value)) ||
                            (type == "keyword" && KEYWORDS_BEFORE_EXPRESSION(value)) ||
                            (type == "punc" && PUNC_BEFORE_EXPRESSION(value)));
-        prev_was_dot = (type == "punc" && value == ".");
+        if (type == "punc" && value == ".") {
+            prev_was_dot = true;
+        } else if (!is_comment) {
+            prev_was_dot = false;
+        }
         var ret = {
             type    : type,
             value   : value,
@@ -803,28 +807,23 @@ function parse($TEXT, options) {
     };
 
     var statement = embed_tokens(function() {
-        var tmp;
         handle_regexp();
         switch (S.token.type) {
           case "string":
-            var dir = false;
-            if (S.in_directives === true) {
-                if ((is_token(peek(), "punc", ";") || peek().nlb) && S.token.raw.indexOf("\\") === -1) {
+            if (S.in_directives) {
+                var token = peek();
+                if (S.token.raw.indexOf("\\") == -1
+                    && (token.nlb
+                        || is_token(token, "eof")
+                        || is_token(token, "punc", ";")
+                        || is_token(token, "punc", "}"))) {
                     S.input.add_directive(S.token.value);
                 } else {
                     S.in_directives = false;
                 }
             }
             var dir = S.in_directives, stat = simple_statement();
-            if (dir) {
-                return new AST_Directive({
-                    start : stat.body.start,
-                    end   : stat.body.end,
-                    quote : stat.body.quote,
-                    value : stat.body.value,
-                });
-            }
-            return stat;
+            return dir ? new AST_Directive(stat.body) : stat;
           case "num":
           case "regexp":
           case "operator":
@@ -856,75 +855,103 @@ function parse($TEXT, options) {
             }
 
           case "keyword":
-            switch (tmp = S.token.value, next(), tmp) {
+            switch (S.token.value) {
               case "break":
+                next();
                 return break_cont(AST_Break);
 
               case "continue":
+                next();
                 return break_cont(AST_Continue);
 
               case "debugger":
+                next();
                 semicolon();
                 return new AST_Debugger();
 
               case "do":
+                next();
+                var body = in_loop(statement);
+                expect_token("keyword", "while");
+                var condition = parenthesised();
+                semicolon(true);
                 return new AST_Do({
-                    body      : in_loop(statement),
-                    condition : (expect_token("keyword", "while"), tmp = parenthesised(), semicolon(true), tmp)
+                    body      : body,
+                    condition : condition
                 });
 
               case "while":
+                next();
                 return new AST_While({
                     condition : parenthesised(),
                     body      : in_loop(statement)
                 });
 
               case "for":
+                next();
                 return for_();
 
               case "function":
+                next();
                 return function_(AST_Defun);
 
               case "if":
+                next();
                 return if_();
 
               case "return":
                 if (S.in_function == 0 && !options.bare_returns)
                     croak("'return' outside of function");
+                next();
+                var value = null;
+                if (is("punc", ";")) {
+                    next();
+                } else if (!can_insert_semicolon()) {
+                    value = expression(true);
+                    semicolon();
+                }
                 return new AST_Return({
-                    value: ( is("punc", ";")
-                             ? (next(), null)
-                             : can_insert_semicolon()
-                             ? null
-                             : (tmp = expression(true), semicolon(), tmp) )
+                    value: value
                 });
 
               case "switch":
+                next();
                 return new AST_Switch({
                     expression : parenthesised(),
                     body       : in_loop(switch_body_)
                 });
 
               case "throw":
+                next();
                 if (S.token.nlb)
                     croak("Illegal newline after 'throw'");
+                var value = expression(true);
+                semicolon();
                 return new AST_Throw({
-                    value: (tmp = expression(true), semicolon(), tmp)
+                    value: value
                 });
 
               case "try":
+                next();
                 return try_();
 
               case "var":
-                return tmp = var_(), semicolon(), tmp;
+                next();
+                var node = var_();
+                semicolon();
+                return node;
 
               case "const":
-                return tmp = const_(), semicolon(), tmp;
+                next();
+                var node = const_();
+                semicolon();
+                return node;
 
               case "with":
                 if (S.input.has_directive("use strict")) {
                     croak("Strict mode may not include a with statement");
                 }
+                next();
                 return new AST_With({
                     expression : parenthesised(),
                     body       : statement()
@@ -1320,10 +1347,15 @@ function parse($TEXT, options) {
             var type = start.type;
             var name = as_property_name();
             if (type == "name" && !is("punc", ":")) {
+                var key = new AST_SymbolAccessor({
+                    start: S.token,
+                    name: as_property_name(),
+                    end: prev()
+                });
                 if (name == "get") {
                     a.push(new AST_ObjectGetter({
                         start : start,
-                        key   : as_atom_node(),
+                        key   : key,
                         value : create_accessor(),
                         end   : prev()
                     }));
@@ -1332,7 +1364,7 @@ function parse($TEXT, options) {
                 if (name == "set") {
                     a.push(new AST_ObjectSetter({
                         start : start,
-                        key   : as_atom_node(),
+                        key   : key,
                         value : create_accessor(),
                         end   : prev()
                     }));
@@ -1354,14 +1386,15 @@ function parse($TEXT, options) {
 
     function as_property_name() {
         var tmp = S.token;
-        next();
         switch (tmp.type) {
+          case "operator":
+            if (!KEYWORDS(tmp.value)) unexpected();
           case "num":
           case "string":
           case "name":
-          case "operator":
           case "keyword":
           case "atom":
+            next();
             return tmp.value;
           default:
             unexpected();
@@ -1370,16 +1403,9 @@ function parse($TEXT, options) {
 
     function as_name() {
         var tmp = S.token;
+        if (tmp.type != "name") unexpected();
         next();
-        switch (tmp.type) {
-          case "name":
-          case "operator":
-          case "keyword":
-          case "atom":
-            return tmp.value;
-          default:
-            unexpected();
-        }
+        return tmp.value;
     };
 
     function _make_symbol(type) {
@@ -1440,14 +1466,14 @@ function parse($TEXT, options) {
         if (is("operator") && UNARY_PREFIX(start.value)) {
             next();
             handle_regexp();
-            var ex = make_unary(AST_UnaryPrefix, start.value, maybe_unary(allow_calls));
+            var ex = make_unary(AST_UnaryPrefix, start, maybe_unary(allow_calls));
             ex.start = start;
             ex.end = prev();
             return ex;
         }
         var val = expr_atom(allow_calls);
         while (is("operator") && UNARY_POSTFIX(S.token.value) && !S.token.nlb) {
-            val = make_unary(AST_UnaryPostfix, S.token.value, val);
+            val = make_unary(AST_UnaryPostfix, S.token, val);
             val.start = start;
             val.end = S.token;
             next();
@@ -1455,9 +1481,10 @@ function parse($TEXT, options) {
         return val;
     };
 
-    function make_unary(ctor, op, expr) {
+    function make_unary(ctor, token, expr) {
+        var op = token.value;
         if ((op == "++" || op == "--") && !is_assignable(expr))
-            croak("Invalid use of " + op + " operator", null, ctor === AST_UnaryPrefix ? expr.start.col - 1 : null);
+            croak("Invalid use of " + op + " operator", token.line, token.col, token.pos);
         return new ctor({ operator: op, expression: expr });
     };
 

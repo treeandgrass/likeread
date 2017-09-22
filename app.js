@@ -16,9 +16,9 @@ const baseinterceptor = require('./interceptor/baseinterceptor.js');
 
 
 //实现模块热加载
-const webpack=require('webpack');
-const webpackConfig = require('./public/javascripts/webpack.config');
-const compiler = webpack(webpackConfig);
+//const webpack=require('webpack');
+//const webpackConfig = require('./public/javascripts/webpack.config');
+//const compiler = webpack(webpackConfig);
 
 
 // Bootstrap mongoose models
@@ -43,14 +43,14 @@ const logout=require('./routes/logout.js');//退出
 
 
 //使用webpacl-dev-middleware
-app.use(require("webpack-dev-middleware")(compiler,{
+/*app.use(require("webpack-dev-middleware")(compiler,{
   noInfo:true,publicPath:webpackConfig.output.publicPath
 
-}));
+}));*/
 
 
 //使用webpack-hot-middleware
-app.use(require("webpack-hot-middleware")(compiler));
+/*app.use(require("webpack-hot-middleware")(compiler));*/
 
 
 

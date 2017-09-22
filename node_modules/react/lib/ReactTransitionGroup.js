@@ -195,7 +195,10 @@ var ReactTransitionGroup = function (_React$Component) {
         // already been removed. In case you need this behavior you can provide
         // a childFactory function to wrap every child, even the ones that are
         // leaving.
-        childrenToRender.push(React.cloneElement(this.props.childFactory(child), { ref: key, key: key }));
+        childrenToRender.push(React.cloneElement(this.props.childFactory(child), {
+          ref: key,
+          key: key
+        }));
       }
     }
 

@@ -1,6 +1,6 @@
 import '../../stylesheets/simplemde.min.css';
-import '../..//stylesheets/articleWrite.css';
-var SimpleMDE=require('simplemde');
+import '../../stylesheets/articleWrite.css';
+var SimpleMDE=require('../../../utils/bombbox/simplemde.js');
 var BombBox = require('../../../utils/bombbox/BombBox.js');
 var io =require('socket.io-client');
 
@@ -71,12 +71,7 @@ var bombbox = new BombBox(simplemde,
 
 	};
 
-
-
-	var titleInput=document.querySelector('input[id=title]');//获取title对象
-	var timeId;//保存定时器
-
-	document.addEventListener('keydown',function(event){
+	function save(event){
 		//获取数据
 		var articleValue=simplemde.value();
 		var _id=CookieUtils.query('articleId');
@@ -86,15 +81,22 @@ var bombbox = new BombBox(simplemde,
 				update:articleValue};
 		
 		//通过websockt传输到后端
-		
-		if(!timeId){
-			timeId=setTimeout(function(){//异步事件阻塞的机制，当keyinput停止时执行保存
-				clearTimeout(timeId);
-				timeId=undefined;
-				socket.send(data);
-			},100);		
+
+		if(timeId){
+			clearTimeout(timeId);
+			timeId=null;
 		}
-	});
+
+		timeId=setTimeout(function(){//异步事件阻塞的机制，当keyinput停止时执行保存
+			socket.send(data);
+		},100);		
+	}
+
+	var titleInput=document.querySelector('input[id=title]');//获取title对象
+	var timeId;//保存定时器
+
+	document.addEventListener('keydown',save);
+	document.addEventListener('paste',save);
 })();
 
 

@@ -74,7 +74,6 @@ var usedTouchTime = 0;
 var TOUCH_DELAY = 1000;
 
 var TapEventPlugin = {
-
   tapMoveThreshold: tapMoveThreshold,
 
   eventTypes: eventTypes,
@@ -109,7 +108,6 @@ var TapEventPlugin = {
     EventPropagators.accumulateTwoPhaseDispatches(event);
     return event;
   }
-
 };
 
 module.exports = TapEventPlugin;

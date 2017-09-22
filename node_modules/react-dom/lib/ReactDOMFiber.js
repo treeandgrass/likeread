@@ -63,7 +63,6 @@ var DOMRenderer = ReactFiberReconciler({
   scheduleAnimationCallback: window.requestAnimationFrame,
 
   scheduleDeferredCallback: window.requestIdleCallback
-
 });
 
 var warned = false;

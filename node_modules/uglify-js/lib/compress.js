@@ -84,6 +84,7 @@ function Compressor(options, false_by_default) {
         unsafe_comps  : false,
         unsafe_math   : false,
         unsafe_proto  : false,
+        unsafe_regexp : false,
         unused        : !false_by_default,
         warnings      : true,
     }, true);
@@ -316,21 +317,55 @@ merge(Compressor.prototype, {
                     safe_ids = save_ids;
                     return true;
                 }
-                var iife;
-                if (node instanceof AST_Function
-                    && !node.name
-                    && (iife = tw.parent()) instanceof AST_Call
-                    && iife.expression === node) {
-                    // Virtually turn IIFE parameters into variable definitions:
-                    //   (function(a,b) {...})(c,d) => (function() {var a=c,b=d; ...})()
-                    // So existing transformation rules can work on them.
-                    node.argnames.forEach(function(arg, i) {
-                        var d = arg.definition();
-                        d.fixed = function() {
-                            return iife.args[i] || make_node(AST_Undefined, iife);
-                        };
-                        mark(d, true);
-                    });
+                if (node instanceof AST_Function) {
+                    push();
+                    var iife;
+                    if (!node.name
+                        && (iife = tw.parent()) instanceof AST_Call
+                        && iife.expression === node) {
+                        // Virtually turn IIFE parameters into variable definitions:
+                        //   (function(a,b) {...})(c,d) => (function() {var a=c,b=d; ...})()
+                        // So existing transformation rules can work on them.
+                        node.argnames.forEach(function(arg, i) {
+                            var d = arg.definition();
+                            if (!node.uses_arguments && d.fixed === undefined) {
+                                d.fixed = function() {
+                                    return iife.args[i] || make_node(AST_Undefined, iife);
+                                };
+                                mark(d, true);
+                            } else {
+                                d.fixed = false;
+                            }
+                        });
+                    }
+                    descend();
+                    pop();
+                    return true;
+                }
+                if (node instanceof AST_Accessor) {
+                    var save_ids = safe_ids;
+                    safe_ids = Object.create(null);
+                    descend();
+                    safe_ids = save_ids;
+                    return true;
+                }
+                if (node instanceof AST_Binary
+                    && (node.operator == "&&" || node.operator == "||")) {
+                    node.left.walk(tw);
+                    push();
+                    node.right.walk(tw);
+                    pop();
+                    return true;
+                }
+                if (node instanceof AST_Conditional) {
+                    node.condition.walk(tw);
+                    push();
+                    node.consequent.walk(tw);
+                    pop();
+                    push();
+                    node.alternative.walk(tw);
+                    pop();
+                    return true;
                 }
                 if (node instanceof AST_If || node instanceof AST_DWLoop) {
                     node.condition.walk(tw);
@@ -414,7 +449,9 @@ merge(Compressor.prototype, {
 
         function reset_def(def) {
             def.escaped = false;
-            if (toplevel || !def.global || def.orig[0] instanceof AST_SymbolConst) {
+            if (def.scope.uses_eval) {
+                def.fixed = false;
+            } else if (toplevel || !def.global || def.orig[0] instanceof AST_SymbolConst) {
                 def.fixed = undefined;
             } else {
                 def.fixed = false;
@@ -439,6 +476,14 @@ merge(Compressor.prototype, {
         if (!fixed || fixed instanceof AST_Node) return fixed;
         return fixed();
     });
+
+    function is_reference_const(ref) {
+        if (!(ref instanceof AST_SymbolRef)) return false;
+        var orig = ref.definition().orig;
+        for (var i = orig.length; --i >= 0;) {
+            if (orig[i] instanceof AST_SymbolConst) return true;
+        }
+    }
 
     function find_variable(compressor, name) {
         var scope, i = 0;
@@ -1181,12 +1226,12 @@ merge(Compressor.prototype, {
                 && !node.expression.has_side_effects(compressor);
     }
 
-    // may_eq_null()
-    // returns true if this node may evaluate to null or undefined
+    // may_throw_on_access()
+    // returns true if this node may be null, undefined or contain `AST_Accessor`
     (function(def) {
-        AST_Node.DEFMETHOD("may_eq_null", function(compressor) {
+        AST_Node.DEFMETHOD("may_throw_on_access", function(compressor) {
             var pure_getters = compressor.option("pure_getters");
-            return !pure_getters || this._eq_null(pure_getters);
+            return !pure_getters || this._throw_on_access(pure_getters);
         });
 
         function is_strict(pure_getters) {
@@ -1198,7 +1243,12 @@ merge(Compressor.prototype, {
         def(AST_Undefined, return_true);
         def(AST_Constant, return_false);
         def(AST_Array, return_false);
-        def(AST_Object, return_false);
+        def(AST_Object, function(pure_getters) {
+            if (!is_strict(pure_getters)) return false;
+            for (var i = this.properties.length; --i >=0;)
+                if (this.properties[i].value instanceof AST_Accessor) return true;
+            return false;
+        });
         def(AST_Function, return_false);
         def(AST_UnaryPostfix, return_false);
         def(AST_UnaryPrefix, function() {
@@ -1207,33 +1257,33 @@ merge(Compressor.prototype, {
         def(AST_Binary, function(pure_getters) {
             switch (this.operator) {
               case "&&":
-                return this.left._eq_null(pure_getters);
+                return this.left._throw_on_access(pure_getters);
               case "||":
-                return this.left._eq_null(pure_getters)
-                    && this.right._eq_null(pure_getters);
+                return this.left._throw_on_access(pure_getters)
+                    && this.right._throw_on_access(pure_getters);
               default:
                 return false;
             }
         })
         def(AST_Assign, function(pure_getters) {
             return this.operator == "="
-                && this.right._eq_null(pure_getters);
+                && this.right._throw_on_access(pure_getters);
         })
         def(AST_Conditional, function(pure_getters) {
-            return this.consequent._eq_null(pure_getters)
-                || this.alternative._eq_null(pure_getters);
+            return this.consequent._throw_on_access(pure_getters)
+                || this.alternative._throw_on_access(pure_getters);
         })
         def(AST_Seq, function(pure_getters) {
-            return this.cdr._eq_null(pure_getters);
+            return this.cdr._throw_on_access(pure_getters);
         });
         def(AST_SymbolRef, function(pure_getters) {
             if (this.is_undefined) return true;
             if (!is_strict(pure_getters)) return false;
             var fixed = this.fixed_value();
-            return !fixed || fixed._eq_null(pure_getters);
+            return !fixed || fixed._throw_on_access(pure_getters);
         });
     })(function(node, func) {
-        node.DEFMETHOD("_eq_null", func);
+        node.DEFMETHOD("_throw_on_access", func);
     });
 
     /* -----[ boolean/negation helpers ]----- */
@@ -1773,11 +1823,11 @@ merge(Compressor.prototype, {
             return any(this.elements, compressor);
         });
         def(AST_Dot, function(compressor){
-            return this.expression.may_eq_null(compressor)
+            return this.expression.may_throw_on_access(compressor)
                 || this.expression.has_side_effects(compressor);
         });
         def(AST_Sub, function(compressor){
-            return this.expression.may_eq_null(compressor)
+            return this.expression.may_throw_on_access(compressor)
                 || this.expression.has_side_effects(compressor)
                 || this.property.has_side_effects(compressor);
         });
@@ -1909,6 +1959,7 @@ merge(Compressor.prototype, {
                         && node instanceof AST_Assign
                         && node.operator == "="
                         && node.left instanceof AST_SymbolRef
+                        && !is_reference_const(node.left)
                         && scope === self) {
                         node.right.walk(tw);
                         return true;
@@ -2280,6 +2331,7 @@ merge(Compressor.prototype, {
             var args = trim(this.args, compressor, first_in_statement);
             return args && AST_Seq.from_array(args);
         });
+        def(AST_Accessor, return_null);
         def(AST_Function, return_null);
         def(AST_Binary, function(compressor, first_in_statement){
             var right = this.right.drop_side_effect_free(compressor);
@@ -2350,11 +2402,11 @@ merge(Compressor.prototype, {
             return values && AST_Seq.from_array(values);
         });
         def(AST_Dot, function(compressor, first_in_statement){
-            if (this.expression.may_eq_null(compressor)) return this;
+            if (this.expression.may_throw_on_access(compressor)) return this;
             return this.expression.drop_side_effect_free(compressor, first_in_statement);
         });
         def(AST_Sub, function(compressor, first_in_statement){
-            if (this.expression.may_eq_null(compressor)) return this;
+            if (this.expression.may_throw_on_access(compressor)) return this;
             var expression = this.expression.drop_side_effect_free(compressor, first_in_statement);
             if (!expression) return this.property.drop_side_effect_free(compressor, first_in_statement);
             var property = this.property.drop_side_effect_free(compressor);
@@ -3066,7 +3118,8 @@ merge(Compressor.prototype, {
             }
             if (left
                 && !(left instanceof AST_SymbolRef
-                    && left.definition().orig[0] instanceof AST_SymbolLambda)) {
+                    && (left.definition().orig[0] instanceof AST_SymbolLambda
+                        || is_reference_const(left)))) {
                 var parent, field;
                 var cdr = self.cdr;
                 while (true) {
@@ -3628,7 +3681,7 @@ merge(Compressor.prototype, {
             if (fixed) {
                 if (d.should_replace === undefined) {
                     var init = fixed.evaluate(compressor);
-                    if (init !== fixed) {
+                    if (init !== fixed && (compressor.option("unsafe_regexp") || !(init instanceof RegExp))) {
                         init = make_node_from_constant(init, fixed);
                         var value = init.optimize(compressor).print_to_string().length;
                         var fn;

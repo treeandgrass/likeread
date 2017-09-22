@@ -1,6 +1,4 @@
-import '../../stylesheets/simplemde.min.css';
 import '../../stylesheets/articleWrite.css';
-var SimpleMDE=require('../../../utils/bombbox/simplemde.js');
 var BombBox = require('../../../utils/bombbox/BombBox.js');
 var io =require('socket.io-client');
 

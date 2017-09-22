@@ -1,9 +1,11 @@
 const webpack = require('webpack');
+const CleanWebpackPlugin=require('clean-webpack-plugin');
 const path=require('path');
 const entries=require('./public/javascripts/getentries/merge.js')();
 const fs=require('fs');
 //get comoon module
 entries['vendor']=['react','react-dom'];
+
 
 //server Exclude node_modules
 var nodeModules = {};
@@ -15,6 +17,7 @@ fs.readdirSync('node_modules')
         nodeModules[mod] = 'commonjs ' + mod;
     });
 
+	
 const config=[{
 		entry:entries,
 		output:{
@@ -50,6 +53,7 @@ const config=[{
 			
 		 },
 		plugins:[
+			new CleanWebpackPlugin(['public/javascripts/dist']),
 			new webpack.optimize.CommonsChunkPlugin({
 				name:['vendor','manifest']
 			})

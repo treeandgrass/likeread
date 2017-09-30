@@ -9984,7 +9984,7 @@ module.exports = function handlerRender(req, res, result) {
 };
 
 function renderFullPage(html, preloadedState) {
-	return '\n\t\t<!doctype html>\n\t\t<html>\n\t\t\t<title>\n\t\t\t\t ' + preloadedState.title + '\n\t\t\t</title>\n\t\t\t<body>\n\t\t\t\t<div id="root">\n\t\t\t\t\t' + html + '\n\t\t\t\t</div>\n\t\t\t\t<script>\n\t\t\t\t\twindow.__preloadedState=' + (0, _stringify2.default)(preloadedState).replace(/</g, '\\u003c') + '\n\t\t\t\t</script>\n\t\t\t\t<script src="../../javascripts/dist/manifest.js"></script>\n\t\t\t\t<script src="../../javascripts/dist/vendor.js"></script>\n\t\t\t\t<script src="../../javascripts/dist/client.js"></script>\n\t\t\t</body>\n\t\t</html>\n\t';
+	return '\n\t\t<!doctype html>\n\t\t<html>\n\t\t\t<head>\n\t\t\t\t<title>\n\t\t\t\t\t' + preloadedState.title + '\n\t\t\t\t</title>\n\t\t\t\t<base href="http://localhost:3000/index"/>\n\t\t\t\t<base target="_blank" href="http://localhost:3000/index"/>\n\t\t\t\t<link rel="stylesheet" href="../../stylesheets/articledetail.css"/>\n\t\t\t</head>\n\t\t\t<body>\n\t\t\t\t<div id="nav_index"></div>\n\t\t\t\t<div id="root">\n\t\t\t\t\t' + html + '\n\t\t\t\t</div>\n\t\t\t\t<script>\n\t\t\t\t\twindow.__preloadedState=' + (0, _stringify2.default)(preloadedState).replace(/</g, '\\u003c') + '\n\t\t\t\t</script>\n\t\t\t\t<script src="../../javascripts/dist/manifest.js"></script>\n\t\t\t\t<script src="../../javascripts/dist/vendor.js"></script>\n\t\t\t\t<script src="../../javascripts/dist/nav_index.js"></script>\n\t\t\t\t<script src="../../javascripts/dist/client.js"></script>\n\t\t\t</body>\n\t\t</html>\n\t';
 }
 
 /***/ }),
@@ -10046,7 +10046,7 @@ var _reactRedux = __webpack_require__(98);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-//import styles from '../stylesheets/articlePage.css';
+// import '../../stylesheets/articledetail.css';
 
 var MainSection = function (_React$Component) {
 	(0, _inherits3.default)(MainSection, _React$Component);
@@ -10079,21 +10079,22 @@ var MainSection = function (_React$Component) {
 			return _react2.default.createElement(
 				'ul',
 				null,
+				_react2.default.createElement('li', { className: 'blank' }),
 				_react2.default.createElement(
 					'li',
-					{ id: 'title' },
+					{ id: 'title', className: 'title' },
 					_react2.default.createElement(
-						'h1',
+						'span',
 						null,
 						this.props.__state.satte.title
 					)
 				),
 				_react2.default.createElement(
 					'li',
-					{ id: 'author' },
+					{ id: 'author', className: 'author' },
 					_react2.default.createElement(
 						'div',
-						{ 'class': 'authormsg' },
+						{ className: 'authormsg' },
 						_react2.default.createElement('img', null),
 						_react2.default.createElement(
 							'span',
@@ -10107,10 +10108,10 @@ var MainSection = function (_React$Component) {
 						)
 					)
 				),
-				_react2.default.createElement('li', { id: 'article', dangerouslySetInnerHTML: this.createMarkup() }),
+				_react2.default.createElement('li', { id: 'article', className: 'articlecontent', dangerouslySetInnerHTML: this.createMarkup() }),
 				_react2.default.createElement(
 					'li',
-					{ id: 'ops' },
+					{ id: 'ops', className: 'ops' },
 					_react2.default.createElement(
 						'span',
 						null,
@@ -10127,7 +10128,16 @@ var MainSection = function (_React$Component) {
 						'\u5173\u6CE8'
 					)
 				),
-				_react2.default.createElement('li', { id: 'comment' })
+				_react2.default.createElement(
+					'li',
+					{ id: 'comment', className: 'comment' },
+					_react2.default.createElement('textarea', { cols: '50', rows: '10', placeholder: '\u53D1\u8868\u8BC4\u8BBA' }),
+					_react2.default.createElement(
+						'button',
+						{ id: 'commentpulish' },
+						'\u53D1\u8868'
+					)
+				)
 			);
 		}
 	}]);

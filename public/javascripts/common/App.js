@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-//import styles from '../stylesheets/articlePage.css';
+// import '../../stylesheets/articledetail.css';
 
 class MainSection extends React.Component{
 
@@ -24,25 +24,29 @@ class MainSection extends React.Component{
 	render(){
 		return(
 				<ul>
-					<li id="title">
-						<h1>{this.props.__state.satte.title}</h1>
+					<li className="blank"></li>
+					<li id="title" className="title">
+						<span>{this.props.__state.satte.title}</span>
 					</li>
-					<li id="author">
-						<div class="authormsg">
+					<li id="author" className="author">
+						<div className="authormsg">
 							<img  />
 							
 							<span>{this.props.__state.satte.user.username}</span>
 							<span>关注作者</span>
 						</div>
 					</li>
-					<li id="article" dangerouslySetInnerHTML={this.createMarkup()}>
+					<li id="article" className="articlecontent" dangerouslySetInnerHTML={this.createMarkup()}>
 					</li>
-					<li id="ops">
+					<li id="ops" className="ops">
 						<span>喜欢</span>
 						<span>收藏</span>
 						<span>关注</span>
 					</li>
-					<li id="comment"></li>
+					<li id="comment" className="comment">
+						<textarea cols="50" rows="10" placeholder="发表评论"></textarea>
+						<button id="commentpulish">发表</button>
+					</li>
 				</ul>
 			);
 	}

@@ -5,7 +5,7 @@ config path of entries in webpack
 */
 
 var paths=[
-	'D:/node/likeread/public/javascripts/views'
+	'D:/likeread/public/javascripts/views'
 ];
 
 //path array

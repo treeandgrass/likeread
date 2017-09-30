@@ -1,7 +1,7 @@
 import '../../stylesheets/articleWrite.css';
 var BombBox = require('../../../utils/bombbox/BombBox.js');
 var io =require('socket.io-client');
-
+var SimpleMDE=require('simplemde');
 
 
 //初始化SimpleMDE editor

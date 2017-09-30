@@ -88,7 +88,20 @@ const config=[{
 					plugins: ['transform-runtime'],
 					presets: ['es2015', 'stage-0','react'],
 				}
-			 }
+			 },{
+				test:/\.css$/,
+				use: [
+				  { loader: "style-loader" },
+				  { loader: "css-loader" },
+				]  
+			  },
+			  {
+				test:'/\.(png|svg|jpg|gif)$/',
+				use:[
+					'file-loader'
+				]
+				  
+			  }
 		    ]
 		 },
 		externals:nodeModules

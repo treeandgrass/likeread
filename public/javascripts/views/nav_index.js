@@ -27,18 +27,18 @@ class LoginState extends React.Component{
 
 		if(this.props.loginState.username){
 			return(
-				<div>
+				<div className="loginanduserinfo">
 					<span>{this.props.loginState.username}</span>
-					<a href={this.props.URLS.logoutURL}><span>注销</span></a>
+					<a target="_self" href={this.props.URLS.logoutURL}><span>注销</span></a>
 				</div>
 
 				);
 
 		}else{
 			return (
-				<div>
-					<a href={this.props.URLS.loginURL}><span>登录</span></a>
-					<a href={this.props.URLS.registerURL}><span>注册</span></a>
+				<div className="loginanduserinfo">
+					<a target="_self" href={this.props.URLS.loginURL}><span>登录</span></a>
+					<a target="_self" href={this.props.URLS.registerURL}><span>注册</span></a>
 				</div>
 			);
 		}
@@ -65,9 +65,9 @@ class SearchComponent extends React.Component{
 
 	render(){
 		return (
-				<form method='get' action='search'>
-					<div><input  type="text" name="searchContent"/></div>
-					<div><input type="submit" value="搜索"/></div>
+				<form className="searchform" method='get' action='search'>
+					<div className="searchdiv"><input className="textinput"  placeholder="？" type="text" name="searchContent"/></div>
+					<div className="searchdiv"><input className="submitinput" type="submit" value="搜索"/></div>
 				</form>
 			);
 
@@ -105,13 +105,13 @@ class NavComponent extends React.Component{
 	render(){
 		if(this.props.loginState.username){
 			return (
-				<div>
-					<a href={this.props.URLS.writeURL}><span>写文章</span></a>
-					<a href={this.props.URLS.personURL}><span>个人主页</span></a></div>
+				<div className="nav">
+					<a target="_self" href={this.props.URLS.writeURL}><span>写文章</span></a>
+					<a target="_self" href={this.props.URLS.personURL}><span>个人主页</span></a></div>
 			);
 		}else{
 			return(
-				<div><a href={this.props.URLS.writeURL}><span>写文章</span></a></div>
+				<div className="nav"><a target="_self" href={this.props.URLS.writeURL}><span>写文章</span></a></div>
 			);
 		}
 	}
@@ -135,7 +135,7 @@ class ControllerComponent extends React.Component{
 	constructor(props){
 		super(props);
 		this.state={loginState:{username:null}};
-		this.URLS={writeURL:'articleHandle\/articleWrite',personURL:'personInfoHandle\/personPageMain',loginURL:'login',registerURL:'register',logoutURL:'logout'};
+		this.URLS={writeURL:'articleHandle\/articleWrite',personURL:'personInfoHandle\/personPageMain\/',loginURL:'login',registerURL:'register',logoutURL:'logout'};
 		this.Ajax=Ajax.bind(this);
 	}
 

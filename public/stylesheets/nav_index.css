@@ -8,58 +8,50 @@
 	border:1px solid rgb(240,240,240);
 }
 
-#nav_index div{
-	margin-top:10px;
-	min-width:1000px;
-	height:50px;
 
-}
-
-#nav_index div div:nth-child(1){
+#nav_index  .loginanduserinfo{
 	width:100px;
-	height:100px;
-	min-width: 40px;
+	height:60px;
+	min-width: 60px;
 	float:left;
 	min-width: initial;
-	margin-top:20px;
+	line-height:60px;
 }
 
-#nav_index div form:nth-child(2){
-	width:300px;
-	height:40px;
+#nav_index .searchform{
+	width:420px;
+	height:60px;
 	float:left;
 	min-width:initial;
 	margin-left:400px;
-	margin-top:10px;
 }
 
-#nav_index div div:nth-child(3){
-	width:300px;
-	height:40px;
-	float:right;
+
+#nav_index .searchform .searchdiv{
+	width:210px;
+	height:60px;
+	min-width: 60px;
+	float:left;
 	min-width: initial;
-	margin-top:20px;
-}
-
-#nav_index div:nth-child(1) span,a{
-	color:red;
-	display: inline-block;
-	margin-left:5px;
+	line-height:60px;
 }
 
 
-#nav_index div form div:nth-child(1) input:nth-child(1){
-	border-radius:3px;
+
+
+
+#nav_index  .searchform .searchdiv .textinput{
+	border-radius:20px;
 	display: inline-block;
 	border:1px solid gray;
 	width:200px;
 	height:33px;
-	margin:0;
+	margin-left:10;
 }
 
-#nav_index div form div:nth-child(2) input:nth-child(1){
-
+#nav_index  .searchform .searchdiv .submitinput{
 	display: inline-block;
+	border-radius:10px;
 	width:60px;
 	height:33px;
 	border:1px solid;
@@ -68,31 +60,29 @@
 }
 
 
-#nav_index div form:nth-child(2) div:nth-child(1){
-	display: inline-block;
-	width:200px;
-	height:40px;
-	min-width: initial;
-	margin:0;
 
-}
-
-#nav_index div form:nth-child(2) div:nth-child(2){
-	display: inline-block;
-	width:60px;
-	height:40px;
+#nav_index  .nav{
+	width:300px;
+	height:60px;
+	float:right;
 	min-width: initial;
-	margin:0;
-	margin-left:3px;
+	line-height:60px;
 }
 
 
 
-#nav_index div div:nth-child(3) a{
+
+#nav_index .nav a{
 	display:inline-block;
+	text-decoration: none;
 	height:30px;
 	width:100px;
 	color:red;
 	color:white;
 }
 
+#nav_index span{
+	color:red;
+	display: inline-block;
+	margin-left:5px;
+} 

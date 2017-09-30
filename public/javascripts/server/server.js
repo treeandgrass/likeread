@@ -23,10 +23,16 @@ function renderFullPage(html,preloadedState){
 	return `
 		<!doctype html>
 		<html>
-			<title>
-				 ${preloadedState.title}
-			</title>
+			<head>
+				<title>
+					${preloadedState.title}
+				</title>
+				<base href="http://localhost:3000/index"/>
+				<base target="_blank" href="http://localhost:3000/index"/>
+				<link rel="stylesheet" href="../../stylesheets/articledetail.css"/>
+			</head>
 			<body>
+				<div id="nav_index"></div>
 				<div id="root">
 					${html}
 				</div>
@@ -35,6 +41,7 @@ function renderFullPage(html,preloadedState){
 				</script>
 				<script src="../../javascripts/dist/manifest.js"></script>
 				<script src="../../javascripts/dist/vendor.js"></script>
+				<script src="../../javascripts/dist/nav_index.js"></script>
 				<script src="../../javascripts/dist/client.js"></script>
 			</body>
 		</html>

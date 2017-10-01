@@ -1,12 +1,13 @@
 const loadFiles=require('./loadFiles.js');
-
+const path=require('path');
 /*
 config path of entries in webpack
 */
-
-var paths=[
-	'D:/likeread/public/javascripts/views'
-];
+var paths=[];
+var dirs=__dirname.split(path.sep);
+dirs.pop();
+dirs.push('views');
+paths.push(path.join(...dirs));
 
 //path array
 var entries=[];
@@ -24,7 +25,7 @@ function getEntries(){
 	entries.forEach(function(entry){
 		var index=entry.lastIndexOf('.');
 		var subStr=entry.substring(0,index);
-		var keys=subStr.split('\\');
+		var keys=subStr.split(path.sep);
 		var key=keys.pop();
 		fileMap[key]=entry;
 	});
